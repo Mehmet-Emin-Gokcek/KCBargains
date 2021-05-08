@@ -1,0 +1,540 @@
+﻿@model AddProductViewModel;
+
+<div class="container w-75 p-3 pb-0 mb-0">
+    <section class="page-section pb-0 mb-0" id="portfolio">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Product Details</h2>
+            <h3 class="section-subheading text-muted mb-2">Find more information on this product here.</h3>
+        </div>
+
+        <form enctype="multipart/form-data" aps-controller="Products" asp-action="Edit" method="post">
+
+            @*-------Pass ProductId and RetailerId to new model view object----------*@
+            <input type="hidden" asp-for="ProductId" value="@Model.ProductId">
+            <input type="hidden" asp-for="RetailerId" value="@Model.RetailerId">
+
+            @*-------Save Product Button Hidden, will be triggered with any button click in the webform----------*@
+            <button id="submit_form" type="submit" class="btn" hidden>Save Product</button>
+
+            @*-------Product Picture----------*@
+            <div class="row justify-content-center">
+                <div class="col">
+                    <div id="edit_carousel_indicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            @if (@Model.Picture2 != null)
+                            {
+                                <li data-target="#edit_carousel_indicators" data-slide-to="0" class="active"></li>
+                                <li data-target="#edit_carousel_indicators" data-slide-to="1"></li>
+                            }
+                            @if (@Model.Picture3 != null)
+                            {
+                                <li data-target="#edit_carousel_indicators" data-slide-to="2" class="active"></li>
+                            }
+                            @if (@Model.Picture4 != null)
+                            {
+                                <li data-target="#edit_carousel_indicators" data-slide-to="3" class="active"></li>
+                            }
+                        </ol>
+
+
+                        <div class="carousel-inner">
+
+                            @*-----Deleted picture elment will be hidden until a picture is deleted---*@
+                            <img id="deleted" style="display: none !important;" src="~/images/deleted.png" alt="Deleted" asp-append-version="true">
+
+
+                            @*-----check to see if the deal has a picture---*@
+                            @if (@Model.Picture != null)
+                            {
+
+                                <div id="carousel_picture" class="carousel-item active text-center">
+                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture" alt="First slide" asp-append-version="true">
+                                    <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture')">&#215;</a>
+                                </div>
+                            }
+
+                            @*-----If there is no picture uploaded use the default picture---*@
+                            else
+                            {
+                                <div id="carousel_picture" class="carousel-item active text-center">
+                                    <img class="d-block img-fluid rounded" src="~/images/defaultPicture.jpg" alt="Default slide" asp-append-version="true">
+                                    <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture')">&#215;</a>
+                                </div>
+
+                            }
+
+                            @*-----check to see if the deal has a second picture---*@
+                            @if (@Model.Picture2 != null)
+                            {
+                                <div id="carousel_picture2" class="carousel-item text-center">
+                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture2" alt="Second slide" asp-append-version="true">
+                                    <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture2')">&#215;</a>
+                                </div>
+                            }
+
+                            @*-----check to see if the deal has a third picture---*@
+                            @if (@Model.Picture3 != null)
+                            {
+                                <div id="carousel_picture3" class="carousel-item text-center">
+                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture3" alt="Third slide" asp-append-version="true">
+                                    <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture3')">&#215;</a>
+                                </div>
+                            }
+
+                            @*-----check to see if the deal has a fourth picture---*@
+                            @if (@Model.Picture4 != null)
+                            {
+                                <div id="carousel_picture4" class="carousel-item text-center">
+                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture4" alt="Fourth slide" asp-append-version="true">
+                                    <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture4')">&#215;</a>
+                                </div>
+                            }
+                        </div>
+                        @if (@Model.Picture2 != null)//only show carousel arrows if there is more than one image uploaded
+                        {
+                            <a class="carousel-control-prev" href="#edit_carousel_indicators" role="button" data-slide="prev">
+                                <i class="fas fa-arrow-left fa-2x circle-icon" aria-hidden="true"></i>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#edit_carousel_indicators" role="button" data-slide="next">
+                                <i class="fas fa-arrow-right fa-2x circle-icon" aria-hidden="true"></i>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                @*-------Product Info----------*@
+                <div class="col">
+                    <table class="table table-hover bg-light">
+                        <tr>
+                            <th class="align-middle">Name</th>
+
+                            @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
+                            <td name="name_input" class="align-middle" style="display:none">
+                                <input class="form-control" asp-for="Name" type="text" value="@Model.Name" />
+                                <span asp-validation-for="Name"></span>
+                            </td>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="name_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Name">
+                            </td>
+
+                            <td name="name_data" class="align-middle">@Model.Name</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="name_data" class="align-middle">
+                                <input type="button" onclick="editFunction('name')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Name">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Description</th>
+
+                            @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
+                            <td name="description_input" class="align-middle" style="display:none">
+                                <input class="form-control" asp-for="Description" type="text" value="@Model.Description" />
+                                <span asp-validation-for="Description"></span>
+                            </td>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="description_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                            </td>
+
+                            <td name="description_data" class="align-middle">@Model.Description</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="description_data" class="align-middle">
+                                <input type="button" onclick="editFunction('description')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Description">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Quantity</th>
+
+                            @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
+                            <td name="quantity_input" class="align-middle" style="display:none">
+                                <input class="form-control" asp-for="Quantity" type="text" value="@Model.Quantity" />
+                                <span asp-validation-for="Quantity"></span>
+                            </td>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="quantity_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Quantity">
+                            </td>
+
+                            <td name="quantity_data" class="align-middle">@Model.Quantity</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="quantity_data" class="align-middle">
+                                <input type="button" onclick="editFunction('quantity')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Quantity">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Price</th>
+
+                            @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
+                            <td name="cost_input" class="align-middle" style="display:none">
+                                <input class="form-control" asp-for="Cost" type="text" value="@Model.Cost" />
+                                <span asp-validation-for="Cost"></span>
+                            </td>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="cost_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Cost">
+                            </td>
+
+                            <td name="cost_data" class="align-middle">@Model.Cost</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="cost_data" class="align-middle">
+                                <input type="button" onclick="editFunction('cost')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Cost">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Category</th>
+                            <td name="category_input" class="align-middle" style="display:none">
+                                <select class="form-control" asp-for="CategoryId" asp-items="Model.Categories">
+                                    <option value="">Pick a Category</option>
+                                </select>
+                                <span asp-validation-for="CategoryId"></span>
+                            </td>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="category_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Category">
+                            </td>
+
+                            <td name="category_data" class="align-middle">@Model.Category.Name</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="category_data" class="align-middle">
+                                <input type="button" onclick="editFunction('category')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Categoy">
+                            </td>
+                        </tr>
+
+                        @*Picture 1 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 1*@
+                        <tr id="picture" style="display: none;">
+                            <th class="align-middle">Picture</th>
+                            <td class="align-middle">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture">
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                            </td>
+                            @*Submit form button*@
+                            <td name="category_input" class="align-middle">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                            </td>
+                        </tr>
+                        @*Picture 2upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 2*@
+                        <tr id="picture2" style="display: none;">
+                            <th class="align-middle">Picture</th>
+                            <td class="align-middle">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture2">
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                            </td>
+                            @*Submit form button*@
+                            <td name="category_input" class="align-middle">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                            </td>
+                        </tr>
+                        @*Picture 3 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 3*@
+                        <tr id="picture3" style="display: none;">
+                            <th class="align-middle">Picture</th>
+                            <td class="align-middle">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture3">
+                                    <label class="custom-file-label" for="customFile" style="justify-content:flex-start">Choose file</label>
+                                </div>
+                            </td>
+                            @*Submit form button*@
+                            <td name="category_input" class="align-middle">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                            </td>
+                        </tr>
+                        @*Picture 4 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 4*@
+                        <tr id="picture4" style="display: none;">
+                            <th class="align-middle">Picture</th>
+                            <td class="align-middle">
+                                <div class="custom-file">
+                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture4">
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                            </td>
+                            @*Submit form button*@
+                            <td name="category_input" class="align-middle">
+                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+
+            @*-------Pass Picture Data to new model view object or already existing picture data will be lost when uplading images----------*@
+            <input id="input_picture" type="hidden" asp-for="Picture" value="@Model.Picture">
+            <input id="input_picture2" type="hidden" asp-for="Picture2" value="@Model.Picture2">
+            <input id="input_picture3" type="hidden" asp-for="Picture3" value="@Model.Picture3">
+            <input id="input_picture4" type="hidden" asp-for="Picture4" value="@Model.Picture4">
+
+
+
+            @*-------Retailer Info Button----------*@
+            <div class="container" style="margin-bottom:10px; margin-top:10px">
+                <div class="text-center">
+                    <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#retailer">Update Retailer</a>
+                </div>
+            </div>
+
+
+            @*-------Retailer Information----------*@
+            <section class="page-section" style="padding-top:40px; margin-bottom:0px;" id="retailer">
+                <div class="text-center pt-3">
+                    <h2 class="section-heading text-uppercase">Retailer Details</h2>
+                    <h3 class="section-subheading text-muted mb-2">Update retail information here.</h3>
+                </div>
+
+
+                <div class="row align-items-center">
+                    <table class="w-75 m-auto table table-hover bg-light text-center">
+
+                        <tr>
+                            <th class="align-middle">Name</th>
+                            <td class="align-middle">
+                                <input class="form-control" asp-for="Retailer.Name" type="text" value="@Model.Retailer.Name" />
+                                <span asp-validation-for="Retailer.Name"></span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="save Retailer Name"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Address</th>
+                            <td class="align-middle" id="locationField">
+                                <input class="form-control" id="autocomplete" placeholder="Enter street address. We will autofill the rest." type="text" />
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="save Retailer Name"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Street</th>
+                            <td class="align-middle">
+                                <input class="form-control" id="street_number" asp-for="Retailer.Street" type="text" value="@Model.Retailer.Street" disabled />
+                                <span asp-validation-for="Retailer.Street"></span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save Street"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">City</th>
+                            <td class="align-middle">
+                                <input class="form-control" id="locality" asp-for="Retailer.City" type="text" value="@Model.Retailer.City" disabled />
+                                <span asp-validation-for="Retailer.City"></span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save City"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">State</th>
+                            <td class="align-middle">
+                                <input class="form-control" id="administrative_area_level_1" asp-for="Retailer.State" type="text" value="@Model.Retailer.State" disabled />
+                                <span asp-validation-for="Retailer.State"></span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save State"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Zipcode</th>
+                            <td class="align-middle">
+                                <input class="form-control" id="postal_code" asp-for="Retailer.Zipcode" type="text" value="@Model.Retailer.Zipcode" disabled />
+                                <span asp-validation-for="Retailer.Zipcode"></span>
+                            </td>
+                            <td class="align-middle">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Zipcode"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                    @*Latitude and Longitude fields of Retailer object will be accessed via below elements. 
+                    Google maps geolocation API uses these values to show location and create location markers on Maps window*@
+                    <input type="hidden" id="latitude" asp-for="Retailer.Latitude">
+                    <input type="hidden" id="longitude" asp-for="Retailer.Longitude">
+                </div>
+            </section>
+
+        </form>
+    </section>
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+@*        //Initialize tooltip with jQuery
+        $(document).ready(function () {
+            $('.tooltips').tooltip();
+        });*@
+
+        //Make all address fields "un-disabled" in order to submit them, othewise form doesn't submit
+        $(document).ready(function () {
+            $("button").click(function () {
+                $("input").prop("disabled", false);
+            });
+        });
+
+        //Make table rows visible for picture editting/deleting
+        function removeFunction(picture) {
+            //insert deleted image into to replace deleted images, otherwise carousel gets distorted
+            var image = document.getElementById('deleted').getAttribute('src');
+            document.getElementById("carousel_" + picture).children[0].setAttribute('src', image);
+            document.getElementById("input_" + picture).value = null; //nullify the value for picture property of AddProductView, new picture value will be calculated in the productsController as new picture is uploaded
+            document.getElementById(picture).style.display = 'table-row'; //show upload option for nullified picture property of AddProductview
+        };
+
+
+        //show upload options if all of the pictures are not uploaded
+        window.onload = (event) => {
+            for (i = 2; i <= 4; i++){
+                var pictureValue = document.getElementById("input_picture" + i).value; //get values for each picture property of AddProductView model
+                if (pictureValue == null || pictureValue == ""){ //check to see if the picture property is null
+                    document.getElementById("picture"+ i).style.display = 'table-row'; //show upload option for null picture properties
+                }
+            }
+        };
+
+        //Edit function switches between edit button and save button, it makes input field rendered/visible.
+        function editFunction(elementName) {
+            document.getElementsByName(elementName + "_data")[0].style.display = 'none';
+            document.getElementsByName(elementName + "_data")[1].style.display = 'none';
+            document.getElementsByName(elementName + "_input")[0].removeAttribute("style");
+            document.getElementsByName(elementName + "_input")[1].removeAttribute("style");
+        };
+
+        //when save icon is clicked it should trigger form submission to the ProductsController
+        $(document).ready(function () {
+            $('[name = save]').click(function () {
+                $("#submit_form").trigger('click');
+            });
+        });
+    </script>
+}
+
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqXHMNoJJwES8K9SkbOgKejtmsH52QlYo&callback=initAutocomplete&libraries=places&v=weekly"
+        defer></script>
+<script>
+    let placeSearch;
+    let autocomplete;
+    const componentForm = {
+        street_number: "short_name",
+        route: "long_name",
+        locality: "long_name",
+        administrative_area_level_1: "short_name",
+        postal_code: "short_name",
+    };
+    function initAutocomplete() {
+        // Create the autocomplete object, restricting the search predictions to
+        // geographical location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("autocomplete"),
+            { types: ["geocode"] }
+        );
+        // Avoid paying for data that you don't need by restricting the set of
+        // place fields that are returned to just the address components.
+        autocomplete.setFields(["address_component"]);
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+    }
+    function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        const place = autocomplete.getPlace();
+        initMap();
+        for (const component in componentForm) {
+            if (component != "route") { // street_number and route fields are combined into one field, street. So they don't need to be cleared out
+                document.getElementById(component).value = null; //clear out the input fields
+            }
+        }
+        // Get each component of the address from the place details,
+        // and then fill-in the corresponding field on the form.
+        for (const component of place.address_components) {
+            const addressType = component.types[0];
+            if (componentForm[addressType]) {
+                let val = component[componentForm[addressType]];
+                if (addressType == "street_number") {
+                    document.getElementById("street_number").value = val;
+                }
+                else if (addressType == "route") {
+                    document.getElementById("street_number").value += " " + val;
+                }
+                else {
+                    document.getElementById(addressType).value = val;
+                }
+            }
+        }
+    }
+    function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 8,
+            center: { lat: -34.397, lng: 150.644 },
+        });
+        const geocoder = new google.maps.Geocoder();
+        geocodeAddress(geocoder, map);
+    }
+    function geocodeAddress(geocoder, resultsMap) {
+        const address = document.getElementById("autocomplete").value;
+        geocoder.geocode({ address: address }, (results, status) => {
+            if (status === "OK") {
+                resultsMap.setCenter(results[0].geometry.location);
+                new google.maps.Marker({
+                    map: resultsMap,
+                    position: results[0].geometry.location,
+                });
+                var lng = results[0].geometry.location.lng();
+                var lat = results[0].geometry.location.lat();
+                console.log(lng);
+                console.log(lat);
+                //Reset Latitude and Longitude information in the form to ensure data integrity
+                document.getElementById("latitude").value = null;
+                document.getElementById("longitude").value = null;
+                //Save Latitude and Longitude information to the form input element to be saved in the database
+                document.getElementById("latitude").value = lat;
+                document.getElementById("longitude").value = lng;
+            } else {
+                alert(
+                    "Geocode was not successful for the following reason: " + status
+                );
+            }
+        });
+    }
+</script>
+
+<div id="map">
+</div>

@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var UserName = UserManager.GetUserName(User);
+    var user = await UserManager.FindByNameAsync(UserName);
+    var FirstName = user.FirstName;
+
+
+
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
+        <ul class="navbar-nav text-uppercase ml-auto">
+            <li class="nav-item mr-0 pr-0" >
+                @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                {
+                    <img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                }
+            </li>
+            <li class="nav-item ml-0 pl-0">
+                <a class="nav-link js-scroll-trigger" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @FirstName!</a>
+            </li>
+            <li class="nav-item">
+                <button type="submit" class="btn btn-link nav-link js-scroll-trigger">SIGN OUT</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="navbar-nav text-uppercase ml-auto">
+        <li class="nav-item"> <a class="nav-link js-scroll-trigger" id="register" asp-area="Identity" asp-page="/Account/Register">Sign up</a> </li>
+        <li class="nav-item"> <a class="nav-link js-scroll-trigger" id="login" asp-area="Identity" asp-page="/Account/Login">Sign in</a></li>
+        <li class="nav-item"><a class="nav-link js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+        <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+    </ul>
+}
+
+

@@ -142,17 +142,6 @@ namespace KCBargains.Areas.Identity.Pages.Account.Manage
             //Change User's first name
             applicationUser.LastName = Input.LastName;
 
-            //Upload Profile Picture
-            if (Request.Form.Files.Count > 0)
-            {
-                IFormFile file = Request.Form.Files.FirstOrDefault();
-                using (var dataStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(dataStream);
-                    user.ProfilePicture = dataStream.ToArray();
-                }
-            }
-
             //Update User Info
             var updateUser = await _userManager.UpdateAsync(user);
 

@@ -2,6 +2,7 @@
 using KCBargains.Data;
 using KCBargains.Models;
 using KCBargains.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,6 +57,8 @@ namespace KCBargains
 
                 options.ClientId = googleAuthNSection["ClientId"];
                 options.ClientSecret = googleAuthNSection["ClientSecret"];
+                options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                options.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
             })
 
             .AddFacebook(facebookOptions =>
@@ -63,6 +66,7 @@ namespace KCBargains
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
+
 
             });
 

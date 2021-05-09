@@ -174,19 +174,19 @@
         var bounds = new google.maps.LatLngBounds();
         const map = new google.maps.Map(document.getElementById("GoogleMaps"), {
             zoom: 8,
-            center: { lat: @Model[0].ProductRetailer.HomeLatitude, lng: @Model[0].ProductRetailer.HomeLongitude },
+            center: { lat: @Model[0].Retailer.HomeLatitude, lng: @Model[0].Retailer.HomeLongitude },
         });
-        bounds.extend({ lat:  @Model[0].ProductRetailer.HomeLatitude, lng: @Model[0].ProductRetailer.HomeLongitude});
+        bounds.extend({ lat:  @Model[0].Retailer.HomeLatitude, lng: @Model[0].Retailer.HomeLongitude});
 
              @foreach (var item in Model)
         {
             <text>
         var marker = new google.maps.Marker({
-            position: { lat: @item.ProductRetailer.Latitude, lng: @item.ProductRetailer.Longitude },
+            position: { lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude },
             map: map,
             label:"@item.Name",
         });
-        bounds.extend({ lat: @item.ProductRetailer.Latitude, lng: @item.ProductRetailer.Longitude });
+        bounds.extend({ lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude });
             </text>
         }
         map.fitBounds(bounds);

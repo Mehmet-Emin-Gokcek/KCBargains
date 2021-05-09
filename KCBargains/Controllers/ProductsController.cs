@@ -34,7 +34,7 @@ namespace KCBargains.Controllers
         public IActionResult Index()
         {
 
-            List<Product> products = context.Products.Include(e => e.Category).Include(e => e.ProductRetailer).ToList();
+            List<Product> products = context.Products.Include(e => e.Category).Include(e => e.Retailer).ToList();
             return View(products);
         }
 
@@ -49,7 +49,7 @@ namespace KCBargains.Controllers
 
             Product product = context.Products
                 .Include(e => e.Category)
-                .Include(e => e.ProductRetailer)
+                .Include(e => e.Retailer)
                 .Single(e => e.Id == id);
             return View(product);
         }
@@ -74,7 +74,7 @@ namespace KCBargains.Controllers
 
             if (ModelState.IsValid)
             {
-          
+                //Find the product category from database
                 ProductCategory category = context.ProductCategories.Find(addProductViewModel.CategoryId);
 
                 Retailer retailer = new Retailer
@@ -85,12 +85,15 @@ namespace KCBargains.Controllers
                     State = addProductViewModel.Retailer.State,
                     Zipcode = addProductViewModel.Retailer.Zipcode,
                     Latitude = addProductViewModel.Retailer.Latitude,
-                    Longitude = addProductViewModel.Retailer.Longitude,
+                    Longitude = addProductViewModel.Retailer.Longitude
                 };
 
                 string[] uniqueFileName = UploadPhoto(addProductViewModel);//returns unique names of uploaded images
 
+                //Find signed in user from database
+                ApplicationUser SignedUser = context.Users.Find(addProductViewModel.UserId);
 
+                Console.WriteLine("----------------SignedUser: " + SignedUser.Id);
 
                 Product product = new Product
                 {
@@ -102,10 +105,12 @@ namespace KCBargains.Controllers
                     Picture2 = uniqueFileName[1],
                     Picture3 = uniqueFileName[2],
                     Picture4 = uniqueFileName[3],
-
+                    User = SignedUser,
                     Category = category,
-                    ProductRetailer = retailer,
+                    Retailer = retailer
                 };
+
+                Console.WriteLine("----------------product: " + product.User.Id);
 
 
                 context.Retailers.Add(retailer);
@@ -179,8 +184,8 @@ namespace KCBargains.Controllers
         {
             // Pull the Product object that will be edited from the database
             Product theProduct = context.Products.Find(Id);
-            Retailer theRetailer = context.Retailers.Find(theProduct.RetailerId);
-            ProductCategory theCategory = context.ProductCategories.Find(theProduct.CategoryId);
+            Retailer theRetailer = context.Retailers.Find(theProduct.Retailer.Id);
+            ProductCategory theCategory = context.ProductCategories.Find(theProduct.Category.Id);
 
             //Make sure category list will show up 
             List<ProductCategory> categories = context.ProductCategories.ToList();
@@ -197,8 +202,8 @@ namespace KCBargains.Controllers
                 Picture3 = theProduct.Picture3,
                 Picture4 = theProduct.Picture4,
                 Category = theCategory,
-                CategoryId = theProduct.CategoryId,
-                Retailer = theProduct.ProductRetailer,
+                CategoryId = theProduct.Category.Id,
+                Retailer = theProduct.Retailer,
                 RetailerId = theRetailer.Id,
                 ProductId = Id
             };
@@ -265,8 +270,8 @@ namespace KCBargains.Controllers
                 product.Picture2 = addProductViewModel.Picture2;
                 product.Picture3 = addProductViewModel.Picture3;
                 product.Picture4 = addProductViewModel.Picture4;
-                product.CategoryId = category.Id;
-                product.RetailerId = retailer.Id;
+                product.Category.Id = category.Id;
+                product.Retailer.Id = retailer.Id;
 
 
 

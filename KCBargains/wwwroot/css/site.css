@@ -11360,4 +11360,15 @@ input[type="file"] {
     text-align: center !important;
 }
 
-   
+.profile-img {
+  border:0px!important;
+  padding: 0px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+
+#profilePicture {
+    width: 250px;
+    height: 250px;
+    object-fit: cover
+}

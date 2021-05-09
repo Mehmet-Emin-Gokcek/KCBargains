@@ -180,7 +180,7 @@
 
                     <tr>
                         <th class="align-middle">Name</th>
-                        <td class="align-middle">@Model.ProductRetailer.Name</td>
+                        <td class="align-middle">@Model.Retailer.Name</td>
                         <td class="align-middle">
                             <button class="btn">
                                 <i class="fas fa-edit  " data-toggle="tooltip" data-placement="right" title="Edit Retailer Name" onclick="myFunction()"></i>
@@ -190,7 +190,7 @@
 
                     <tr>
                         <th class="align-middle">Street</th>
-                        <td class="align-middle">@Model.ProductRetailer.Street</td>
+                        <td class="align-middle">@Model.Retailer.Street</td>
                         <td class="align-middle">
                             <button class="btn">
                                 <i class="fas fa-edit  " data-toggle="tooltip" data-placement="right" title="Edit Street" onclick="myFunction()"></i>
@@ -200,7 +200,7 @@
 
                     <tr>
                         <th class="align-middle">City</th>
-                        <td class="align-middle">@Model.ProductRetailer.City</td>
+                        <td class="align-middle">@Model.Retailer.City</td>
                         <td class="align-middle">
                             <button class="btn">
                                 <i class="fas fa-edit  " data-toggle="tooltip" data-placement="right" title="Edit City" onclick="myFunction()"></i>
@@ -209,7 +209,7 @@
                     </tr>
                     <tr>
                         <th class="align-middle">State</th>
-                        <td class="align-middle">@Model.ProductRetailer.State </td>
+                        <td class="align-middle">@Model.Retailer.State </td>
                         <td class="align-middle">
                             <button class="btn">
                                 <i class="fas fa-edit  " data-toggle="tooltip" data-placement="right" title="Edit State" onclick="myFunction()"></i>
@@ -218,7 +218,7 @@
                     </tr>
                     <tr>
                         <th class="align-middle">Zipcode</th>
-                        <td class="align-middle">@Model.ProductRetailer.Zipcode </td>
+                        <td class="align-middle">@Model.Retailer.Zipcode </td>
                         <td class="align-middle">
                             <button class="btn">
                                 <i class="fas fa-edit  " data-toggle="tooltip" data-placement="right" title="Edit ZipCode" onclick="myFunction()"></i>
@@ -252,14 +252,14 @@
         var bounds = new google.maps.LatLngBounds();
         const map = new google.maps.Map(document.getElementById("GoogleMaps"), {
             zoom: 8,
-            center: { lat: @Model.ProductRetailer.Latitude, lng: @Model.ProductRetailer.Longitude },
+            center: { lat: @Model.Retailer.Latitude, lng: @Model.Retailer.Longitude },
         });
 
 
         var marker = new google.maps.Marker({
-            position: { lat: @Model.ProductRetailer.Latitude, lng: @Model.ProductRetailer.Longitude },
+            position: { lat: @Model.Retailer.Latitude, lng: @Model.Retailer.Longitude },
             map: map,
-            label:"@Model.ProductRetailer.Name",
+            label:"@Model.Retailer.Name",
         });
     }
             </script>

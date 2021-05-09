@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KCBargains.Models
 {
@@ -17,11 +19,9 @@ namespace KCBargains.Models
         public string Picture2 { get; set; }
         public string Picture3 { get; set; }
         public string Picture4 { get; set; }
-        public int CategoryId { get; set; }
-        public int RetailerId { get; set; }
-        public int UserId { get; set; }
-        public Retailer ProductRetailer { get; set; }
+        public Retailer Retailer { get; set; }
         public ProductCategory Category { get; set; }
+        public ApplicationUser User { get; set; }
 
         public Product(){}
 

@@ -99,7 +99,7 @@ namespace KCBargains.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<double>("Cost")
@@ -126,17 +126,19 @@ namespace KCBargains.Migrations
                     b.Property<string>("Quantity")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("RetailerId")
+                    b.Property<int?>("RetailerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("RetailerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Products");
                 });
@@ -325,15 +327,15 @@ namespace KCBargains.Migrations
                 {
                     b.HasOne("KCBargains.Models.ProductCategory", "Category")
                         .WithMany("products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
-                    b.HasOne("KCBargains.Models.Retailer", "ProductRetailer")
+                    b.HasOne("KCBargains.Models.Retailer", "Retailer")
                         .WithMany()
-                        .HasForeignKey("RetailerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RetailerId");
+
+                    b.HasOne("KCBargains.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

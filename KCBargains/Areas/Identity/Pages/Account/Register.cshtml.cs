@@ -1,21 +1,22 @@
 ﻿
-using System;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using KCBargains.Models;
-using KCBargains.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace KCBargains.Areas.Identity.Pages.Account
 {
@@ -94,7 +95,36 @@ namespace KCBargains.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName, LastName = Input.LastName};
-                var result = await _userManager.CreateAsync(user, Input.Password);
+
+
+
+                //Fetch and save default Avatar picture to the database if there is not profile picture uploaded
+                if (Request.Form.Files.Count == 0)
+                {
+                    string filePath = @"wwwroot\images\defaultAvatar.png";
+                    //Instantiate FileStream object and pass the filePath to read the image file
+                    FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
+                    //Instantiate MemoryStream object to store the data stream coming from FileStream object
+                    MemoryStream memoryStream = new MemoryStream();                    
+                    await stream.CopyToAsync(memoryStream);
+                    //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
+                    user.ProfilePicture = memoryStream.ToArray();
+                    //Update the User object in database
+                    await _userManager.UpdateAsync(user);
+                }
+
+                //Upload Profile Picture
+                if (Request.Form.Files.Count > 0)
+                {
+                    IFormFile file = Request.Form.Files.FirstOrDefault();
+                    MemoryStream memoryStream = new MemoryStream();
+                    await file.CopyToAsync(memoryStream);
+                    user.ProfilePicture = memoryStream.ToArray();
+                    await _userManager.UpdateAsync(user);
+                }
+
+
+             var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("{Name} User created a new account with password.", user.FirstName);

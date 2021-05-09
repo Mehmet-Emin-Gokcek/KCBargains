@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -123,13 +125,32 @@ namespace KCBargains.Areas.Identity.Pages.Account
 
                 if (UserCreateResult.Succeeded)
                 {
-                    //Find the user from DataBase
-                    ApplicationUser applicationUser = await _userManager.FindByIdAsync(user.Id);
 
                     //Confirm Email to avoid sending email confirmation link
-                    applicationUser.EmailConfirmed = true;
+                    user.EmailConfirmed = true;
 
-                    //Update user info to confirm email confirmation column in Database
+                    //Get web path for External User Profile Picture
+                    var picture = info.Principal.FindFirstValue("urn:google:picture");
+
+                    // Create a request for the URL.   
+                    WebRequest request = WebRequest.Create(picture);
+
+                    // Get the response.  
+                    WebResponse response = request.GetResponse();
+
+                    // Get the stream containing content returned by the server.  
+                    Stream dataStream = response.GetResponseStream();
+
+                    //Instantiate MemoryStream object to store the data stream coming from dataStream object
+                    MemoryStream memoryStream = new MemoryStream();
+
+                    //Copy the data coming from the datastream to MemoryStream object
+                    await dataStream.CopyToAsync(memoryStream);
+
+                    //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
+                    user.ProfilePicture = memoryStream.ToArray();
+    
+                    //Update user info to confirm email confirmation column and ProfilePicture Column in Database
                     await _userManager.UpdateAsync(user);
 
                     //Add login info for the user

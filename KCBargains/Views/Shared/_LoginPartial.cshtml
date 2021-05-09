@@ -9,9 +9,6 @@
     var UserName = UserManager.GetUserName(User);
     var user = await UserManager.FindByNameAsync(UserName);
     var FirstName = user.FirstName;
-
-
-
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
         <ul class="navbar-nav text-uppercase ml-auto">
             <li class="nav-item mr-0 pr-0" >

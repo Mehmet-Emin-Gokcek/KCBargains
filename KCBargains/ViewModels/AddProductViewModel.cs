@@ -37,12 +37,13 @@ namespace KCBargains.ViewModels
         public int RetailerId { get; set; }
 
         //This property will be used for Product editting
+        [Required(ErrorMessage = "Signed-in user id could not be found! Contact system administrator!")]
+        public string UserId { get; set; }
         public int ProductId { get; set; }
         public string Picture { get; set; }
         public string Picture2 { get; set; }
         public string Picture3 { get; set; }
         public string Picture4 { get; set; }
-
         public Retailer Retailer { get; set; }
         public ProductCategory Category { get; set; }
         public List<SelectListItem> Categories { get; set; }

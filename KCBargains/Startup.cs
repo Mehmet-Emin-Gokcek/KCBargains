@@ -67,7 +67,6 @@ namespace KCBargains
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
 
-
             });
 
             //Google reCaptcha Service

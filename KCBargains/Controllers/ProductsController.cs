@@ -93,8 +93,6 @@ namespace KCBargains.Controllers
                 //Find signed in user from database
                 ApplicationUser SignedUser = context.Users.Find(addProductViewModel.UserId);
 
-                Console.WriteLine("----------------SignedUser: " + SignedUser.Id);
-
                 Product product = new Product
                 {
                     Name = addProductViewModel.Name,
@@ -109,9 +107,6 @@ namespace KCBargains.Controllers
                     Category = category,
                     Retailer = retailer
                 };
-
-                Console.WriteLine("----------------product: " + product.User.Id);
-
 
                 context.Retailers.Add(retailer);
                 context.Products.Add(product);
@@ -184,8 +179,8 @@ namespace KCBargains.Controllers
         {
             // Pull the Product object that will be edited from the database
             Product theProduct = context.Products.Find(Id);
-            Retailer theRetailer = context.Retailers.Find(theProduct.Retailer.Id);
-            ProductCategory theCategory = context.ProductCategories.Find(theProduct.Category.Id);
+            Retailer theRetailer = context.Retailers.Find(theProduct.RetailerId);
+            ProductCategory theCategory = context.ProductCategories.Find(theProduct.CategoryId);
 
             //Make sure category list will show up 
             List<ProductCategory> categories = context.ProductCategories.ToList();

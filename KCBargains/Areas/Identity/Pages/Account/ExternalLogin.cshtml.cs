@@ -4,11 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using KCBargains.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -129,27 +132,10 @@ namespace KCBargains.Areas.Identity.Pages.Account
                     //Confirm Email to avoid sending email confirmation link
                     user.EmailConfirmed = true;
 
-                    //Get web path for External User Profile Picture
-                    var picture = info.Principal.FindFirstValue("urn:google:picture");
-
-                    // Create a request for the URL.   
-                    WebRequest request = WebRequest.Create(picture);
-
-                    // Get the response.  
-                    WebResponse response = request.GetResponse();
-
-                    // Get the stream containing content returned by the server.  
-                    Stream dataStream = response.GetResponseStream();
-
-                    //Instantiate MemoryStream object to store the data stream coming from dataStream object
-                    MemoryStream memoryStream = new MemoryStream();
-
-                    //Copy the data coming from the datastream to MemoryStream object
-                    await dataStream.CopyToAsync(memoryStream);
 
                     //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
-                    user.ProfilePicture = memoryStream.ToArray();
-    
+                    user.ProfilePicture = await GetProfilePictureAsync(info);
+
                     //Update user info to confirm email confirmation column and ProfilePicture Column in Database
                     await _userManager.UpdateAsync(user);
 
@@ -168,6 +154,55 @@ namespace KCBargains.Areas.Identity.Pages.Account
                 
                 return Page();
             }
+        }
+
+        public async Task<byte[]> GetProfilePictureAsync(ExternalLoginInfo info)
+        {
+            string picture = null;
+
+            if (info.LoginProvider == "Google")
+            {
+                //Get web path for External User Profile Picture
+                picture = info.Principal.FindFirstValue("urn:google:picture");
+            }
+
+            if (info.LoginProvider == "Facebook")
+            {
+                string identifier = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                //Get web path for External User Profile Picture
+                picture = $"https://graph.facebook.com/v10.0/{identifier}/picture?type=large";
+            }
+
+            // Create a request for the URL.   
+            WebRequest request = WebRequest.Create(picture);
+
+            // Get the response.  
+            WebResponse response = request.GetResponse();
+
+            // Get the stream containing content returned by the server.  
+            Stream dataStream = response.GetResponseStream();
+
+            //Instantiate MemoryStream object to store the data stream coming from dataStream object
+            MemoryStream memoryStream = new MemoryStream();
+
+            //Copy the data coming from the datastream to MemoryStream object 
+            await dataStream.CopyToAsync(memoryStream);
+
+            byte[] array = memoryStream.ToArray();
+            
+            if (array.Length == 0) //if no picture data is retrieved through external login assign default avatar picture
+            {
+                    string filePath = @"wwwroot\images\defaultAvatar.png";
+                    //Instantiate FileStream object and pass the filePath to read the image file
+                    FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
+                    //Instantiate MemoryStream object to store the data stream coming from FileStream object
+                    MemoryStream fileMemoryStream = new MemoryStream();
+                    await stream.CopyToAsync(fileMemoryStream);
+                    //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
+                    array = fileMemoryStream.ToArray();
+            }
+           
+            return array;
         }
 
 
@@ -216,11 +251,11 @@ namespace KCBargains.Areas.Identity.Pages.Account
                     }
                 }
              }
-          
+
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
-    
+
         }*/
 
 

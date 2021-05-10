@@ -118,8 +118,8 @@ namespace KCBargains.Migrations
                     Picture2 = table.Column<string>(nullable: true),
                     Picture3 = table.Column<string>(nullable: true),
                     Picture4 = table.Column<string>(nullable: true),
-                    RetailerId = table.Column<int>(nullable: true),
-                    CategoryId = table.Column<int>(nullable: true),
+                    RetailerId = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -130,13 +130,13 @@ namespace KCBargains.Migrations
                         column: x => x.CategoryId,
                         principalTable: "ProductCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_Retailers_RetailerId",
                         column: x => x.RetailerId,
                         principalTable: "Retailers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_User_UserId",
                         column: x => x.UserId,

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KCBargains.Migrations
 {
     [DbContext(typeof(BargainsDbContext))]
-    [Migration("20210508074101_initialMigration")]
+    [Migration("20210510002814_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,7 +101,7 @@ namespace KCBargains.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<double>("Cost")
@@ -128,7 +128,7 @@ namespace KCBargains.Migrations
                     b.Property<string>("Quantity")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("RetailerId")
+                    b.Property<int>("RetailerId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -329,11 +329,15 @@ namespace KCBargains.Migrations
                 {
                     b.HasOne("KCBargains.Models.ProductCategory", "Category")
                         .WithMany("products")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KCBargains.Models.Retailer", "Retailer")
                         .WithMany()
-                        .HasForeignKey("RetailerId");
+                        .HasForeignKey("RetailerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KCBargains.Models.ApplicationUser", "User")
                         .WithMany()

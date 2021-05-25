@@ -27,7 +27,7 @@ namespace KCBargains.Models
         //Same concept and practice applies to CategoryId field and ProductCategory object as well as UserId field and ApplicationUser object.
         public int RetailerId { get; set; }
         public Retailer Retailer { get; set; }
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public ProductCategory Category { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }

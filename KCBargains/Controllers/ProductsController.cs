@@ -84,9 +84,6 @@ namespace KCBargains.Controllers
                     Longitude = productViewModel.Retailer.Longitude
                 };
 
-                Console.WriteLine("retailer.Latitude: " + retailer.Latitude);
-                Console.WriteLine("retailer.Longitude: " + retailer.Longitude);
-
 
                 string[] pictureList = UploadPicture(productViewModel);//returns list of uploaded pictures
 
@@ -118,7 +115,8 @@ namespace KCBargains.Controllers
             //reload category list options to make sure they will appear after the data validation errors
             List<ProductCategory> categories = context.ProductCategories.ToList();
 
-            //passing new empty Model Object with categories list options
+            //passing new
+            //Model Object with categories list options
             return View(new ProductViewModel(categories, new Retailer())); 
         }
 
@@ -322,8 +320,6 @@ namespace KCBargains.Controllers
             return Content(response);
         }
 
-
-
         public ContentResult DeleteCategory(string id) {
             int ID = 0;
             string response = $"DeleteCategory() Error!!!  Product Id: {id} input is either null or empty!";
@@ -333,13 +329,18 @@ namespace KCBargains.Controllers
                 try
                 {
                     ID = Int32.Parse(id);
-
-                    Console.WriteLine($" Product Id: '{ID}' has been parsed successfully");
-
                     //check to see if a ProductCategory table contains a 'ProductCategory' object with the parsed ID
                     if (context.ProductCategories.Any(c => c.Id == ID)) 
                     {
-                        ProductCategory category = context.ProductCategories.Find(ID);
+                        //Nullify the relationship between the ProductCategory object and the Product object 
+                        //CategoryId foreign fey field on the Products table will become null.
+                        //This ensures that Products related to ProductCategory are not deleted.
+                        //Default behavior is to delete all Products that are in relationship with a ProductCategory
+                        //Learn more here: https://docs.microsoft.com/en-us/ef/core/saving/cascade-delete
+                        ProductCategory category = context.ProductCategories.Include(c => c.products).Single(c => c.Id == ID);
+                        foreach (var product in category.products) {
+                            product.Category = null;
+                        }
                         context.ProductCategories.Remove(category);
                         context.SaveChanges();
                         response = ID.ToString();

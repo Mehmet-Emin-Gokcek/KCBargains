@@ -44,7 +44,7 @@
             //Load the table data
             getCategoryData();
 
-            //Event Listener for Category Input Field
+            //SubmitButton: Event Listener for Category Input Field
             $('table').on('click', '#addCategory', function (e) {
                 e.preventDefault();
                 //$(this) refers to #addCategory element.
@@ -54,6 +54,22 @@
                 var categoryId = $(this).parent().parent().attr('id');
                 var categoryName = $("#" + categoryId).find("td:eq(1)").find('input').val(); //There is only one input field in the whole page.So this would be the value of "CategoryInput" 
                 createCategory(categoryName);// Send the 'CategoryName' to the 'ProductsController'
+            });
+
+
+            //Enter Key: Event Listener for Category Input Field
+            $('table').on('keyup', 'input', function (e) {
+                 //Number 13 is the "Enter" key on the keyboard
+                 if (e.keyCode === 13) {
+                        e.preventDefault();
+                        //$(this) refers to #addCategory element.
+                        //Parent element of '#addCategory' is '<td>'
+                        //Parent element of that is '<td>'. We are trying to get the Id of '<tr>' element, which is the 'CategoryId' value. 
+                        //So, focusingout on 'input' field submits the 'CategoryName'
+                        var categoryId = $(this).parent().parent().attr('id');
+                        var categoryName = $(this).val(); //There is only one input field in the whole page.So this would be the value of "CategoryInput" 
+                        createCategory(categoryName);// Send the 'CategoryName' to the 'ProductsController'
+                 }
             });
 
             //Event Listener for deleteCategory buttons
@@ -126,13 +142,13 @@
                 console.log("data.length:  " + data.length);
                 if (data.length == 0) {
                     $('#noData').removeAttr('hidden');
-                    $('#CategoryTable').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
+                    $('tbody').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
                     insertInputRow(0);
                 }
                 else {
                     var categoryArray = JSON.parse(data); //parse JSON object into JavaScript object
                     var Id = categoryArray[categoryArray.length - 1].Id; //Get the Id of last Category Object
-                    $('#CategoryTable').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
+                    $('tbody').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
                     insertInputRow(Id); //Insert Category input field as the first row of the 'CategoryTable'
                     categoryArray.forEach(insertRow); //send the JavaScript array object to 'insertRow' function
                 }

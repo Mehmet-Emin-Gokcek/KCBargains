@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KCBargains.Migrations
 {
-    public partial class initialMigration : Migration
+    public partial class initialMigation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -114,7 +114,7 @@ namespace KCBargains.Migrations
                     Description = table.Column<string>(nullable: true),
                     Quantity = table.Column<string>(nullable: true),
                     Cost = table.Column<double>(nullable: false),
-                    Picture = table.Column<string>(nullable: true),
+                    Picture1 = table.Column<string>(nullable: true),
                     Picture2 = table.Column<string>(nullable: true),
                     Picture3 = table.Column<string>(nullable: true),
                     Picture4 = table.Column<string>(nullable: true),

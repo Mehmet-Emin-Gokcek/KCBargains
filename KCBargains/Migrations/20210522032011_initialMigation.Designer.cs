@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KCBargains.Migrations
 {
     [DbContext(typeof(BargainsDbContext))]
-    [Migration("20210510002814_initialMigration")]
-    partial class initialMigration
+    [Migration("20210522032011_initialMigation")]
+    partial class initialMigation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,7 +113,7 @@ namespace KCBargains.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Picture")
+                    b.Property<string>("Picture1")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Picture2")

@@ -1,4 +1,7 @@
-﻿@model AddProductViewModel;
+﻿@model ProductViewModel;
+
+@*-------Roles: This page will be seen by admins----------*@
+
 
 <div class="container w-75 p-3 pb-0 mb-0">
     <section class="page-section pb-0 mb-0" id="portfolio">
@@ -14,7 +17,7 @@
             <input type="hidden" asp-for="RetailerId" value="@Model.RetailerId">
 
             @*-------Save Product Button Hidden, will be triggered with any button click in the webform----------*@
-            <button id="submit_form" type="submit" class="btn" hidden>Save Product</button>
+            <button id="submit_form" type="submit" class="btn" hidden></button>
 
             @*-------Product Picture----------*@
             <div class="row justify-content-center">
@@ -39,16 +42,16 @@
 
                         <div class="carousel-inner">
 
-                            @*-----Deleted picture elment will be hidden until a picture is deleted---*@
-                            <img id="deleted" style="display: none !important;" src="~/images/deleted.png" alt="Deleted" asp-append-version="true">
+                            @*-----Deleted picture elment will be hidden until a picture is deleted, once a picture is deleted its image src attribute will be replaced by below img src---*@
+                            <img id="deleted" style="display: none !important;" src="~/images/deleted.png" alt="Deleted">
 
 
                             @*-----check to see if the deal has a picture---*@
-                            @if (@Model.Picture != null)
+                            @if (@Model.Picture1 != null)
                             {
 
                                 <div id="carousel_picture" class="carousel-item active text-center">
-                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture" alt="First slide" asp-append-version="true">
+                                    <img class="d-block img-fluid rounded" src="~/images/@Model.Picture1" alt="First slide" asp-append-version="true">
                                     <a class="remove-image" href="#" style="display: inline;" onclick="removeFunction('picture')">&#215;</a>
                                 </div>
                             }
@@ -106,6 +109,7 @@
 
                 @*-------Product Info----------*@
                 <div class="col">
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <table class="table table-hover bg-light">
                         <tr>
                             <th class="align-middle">Name</th>
@@ -118,7 +122,7 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="name_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Name">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Name">
                             </td>
 
                             <td name="name_data" class="align-middle">@Model.Name</td>
@@ -139,7 +143,7 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="description_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
                             </td>
 
                             <td name="description_data" class="align-middle">@Model.Description</td>
@@ -160,7 +164,7 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="quantity_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Quantity">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Quantity">
                             </td>
 
                             <td name="quantity_data" class="align-middle">@Model.Quantity</td>
@@ -181,7 +185,7 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="cost_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Cost">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Cost">
                             </td>
 
                             <td name="cost_data" class="align-middle">@Model.Cost</td>
@@ -202,8 +206,9 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="category_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Category">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Category">
                             </td>
+
 
                             <td name="category_data" class="align-middle">@Model.Category.Name</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
@@ -217,13 +222,13 @@
                             <th class="align-middle">Picture</th>
                             <td class="align-middle">
                                 <div class="custom-file">
-                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture">
+                                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture1">
                                     <label class="custom-file-label" for="customFile">Choose file</label>
                                 </div>
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
                             </td>
                         </tr>
                         @*Picture 2upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 2*@
@@ -237,7 +242,7 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
                             </td>
                         </tr>
                         @*Picture 3 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 3*@
@@ -251,7 +256,7 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
                             </td>
                         </tr>
                         @*Picture 4 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 4*@
@@ -265,7 +270,7 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" onclick="SubmitForm()" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
                             </td>
                         </tr>
 
@@ -274,7 +279,7 @@
             </div>
 
             @*-------Pass Picture Data to new model view object or already existing picture data will be lost when uplading images----------*@
-            <input id="input_picture" type="hidden" asp-for="Picture" value="@Model.Picture">
+            <input id="input_picture1" type="hidden" asp-for="Picture1" value="@Model.Picture1">
             <input id="input_picture2" type="hidden" asp-for="Picture2" value="@Model.Picture2">
             <input id="input_picture3" type="hidden" asp-for="Picture3" value="@Model.Picture3">
             <input id="input_picture4" type="hidden" asp-for="Picture4" value="@Model.Picture4">
@@ -297,19 +302,25 @@
                 </div>
 
 
-                <div class="row align-items-center">
-                    <table class="w-75 m-auto table table-hover bg-light text-center">
-
+                <div class="row justify-content-center">
+                    <table class="w-75 m-auto table table-hover bg-light">
                         <tr>
                             <th class="align-middle">Name</th>
-                            <td class="align-middle">
+                            @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
+                            <td name="retailer_name_input" class="align-middle" style="display:none">
                                 <input class="form-control" asp-for="Retailer.Name" type="text" value="@Model.Retailer.Name" />
                                 <span asp-validation-for="Retailer.Name"></span>
                             </td>
-                            <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="save Retailer Name"></i>
-                                </button>
+
+                            @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
+                            <td name="retailer_name_input" class="align-middle" style="display:none">
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                            </td>
+
+                            <td name="retailer_name_data" class="align-middle">@Model.Retailer.Name</td>
+                            @*Edit button makes save button un-hidden/rendered using editFunction*@
+                            <td name="retailer_name_data" class="align-middle">
+                                <input type="button" onclick="editFunction('retailer_name')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Retailer Name">
                             </td>
                         </tr>
 
@@ -319,9 +330,7 @@
                                 <input class="form-control" id="autocomplete" placeholder="Enter street address. We will autofill the rest." type="text" />
                             </td>
                             <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="save Retailer Name"></i>
-                                </button>
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Retailer">
                             </td>
                         </tr>
 
@@ -332,9 +341,7 @@
                                 <span asp-validation-for="Retailer.Street"></span>
                             </td>
                             <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save Street"></i>
-                                </button>
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Street">
                             </td>
                         </tr>
 
@@ -345,9 +352,7 @@
                                 <span asp-validation-for="Retailer.City"></span>
                             </td>
                             <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save City"></i>
-                                </button>
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save City">
                             </td>
                         </tr>
                         <tr>
@@ -357,9 +362,7 @@
                                 <span asp-validation-for="Retailer.State"></span>
                             </td>
                             <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save  " data-toggle="tooltip" data-placement="right" title="Save State"></i>
-                                </button>
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save State">
                             </td>
                         </tr>
                         <tr>
@@ -369,15 +372,13 @@
                                 <span asp-validation-for="Retailer.Zipcode"></span>
                             </td>
                             <td class="align-middle">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Zipcode"></i>
-                                </button>
+                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Zipcode">
                             </td>
                         </tr>
                     </table>
 
-                    @*Latitude and Longitude fields of Retailer object will be accessed via below elements. 
-                    Google maps geolocation API uses these values to show location and create location markers on Maps window*@
+                    @*Latitude and Longitude fields of Retailer object will be accessed via below elements.
+                        Google maps geolocation API uses these values to show location and create location markers on Maps window*@
                     <input type="hidden" id="latitude" asp-for="Retailer.Latitude">
                     <input type="hidden" id="longitude" asp-for="Retailer.Longitude">
                 </div>
@@ -410,9 +411,9 @@
 
         //Make table rows visible for picture editting/deleting
         function removeFunction(picture) {
-            //insert deleted image into to replace deleted images, otherwise carousel gets distorted
-            var image = document.getElementById('deleted').getAttribute('src');
-            document.getElementById("carousel_" + picture).children[0].setAttribute('src', image);
+            //insert the default deleted image to replace newly deleted images, otherwise carousel gets distorted
+            var srcPath = document.getElementById('deleted').getAttribute('src'); //get the src path of the default deleted image
+            document.getElementById("carousel_" + picture).children[0].setAttribute('src', srcPath); //assign the src path of the default image to newly deleted image
             document.getElementById("input_" + picture).value = null; //nullify the value for picture property of AddProductView, new picture value will be calculated in the productsController as new picture is uploaded
             document.getElementById(picture).style.display = 'table-row'; //show upload option for nullified picture property of AddProductview
         };

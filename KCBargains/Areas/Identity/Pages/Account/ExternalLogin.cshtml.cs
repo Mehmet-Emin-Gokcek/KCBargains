@@ -192,14 +192,20 @@ namespace KCBargains.Areas.Identity.Pages.Account
             
             if (array.Length == 0) //if no picture data is retrieved through external login assign default avatar picture
             {
-                    string filePath = @"wwwroot\images\defaultAvatar.png";
-                    //Instantiate FileStream object and pass the filePath to read the image file
-                    FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
+                string filePath = @"wwwroot\images\defaultAvatar.png";
+
+                //Instantiate FileStream object and pass the filePath to read the image file
+                //The using construct ensures that the file will be closed when you leave the block even if an exception is thrown.
+                using (FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
                     //Instantiate MemoryStream object to store the data stream coming from FileStream object
                     MemoryStream fileMemoryStream = new MemoryStream();
                     await stream.CopyToAsync(fileMemoryStream);
                     //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
                     array = fileMemoryStream.ToArray();
+                }
+                
+             
             }
            
             return array;

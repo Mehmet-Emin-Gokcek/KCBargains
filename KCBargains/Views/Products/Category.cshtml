@@ -1,0 +1,193 @@
+﻿
+
+<div class="container w-75 p-3">
+    <section class="page-section " id="services">
+        @*-------Header Text---------*@
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Product Category</h2>
+            <h3 class="section-subheading text-muted">View product categories below.</h3>
+        </div>
+
+
+        @*-------If no product category is present---------*@
+            <div id="noData" class="text-center text-danger" hidden>
+                <h4 class="section-heading text-uppercase">No Product Categories yet!</h4>
+            </div>
+        
+
+        <div class="row justify-content-around">
+            @*-------Product Info----------*@
+            <div class="col">
+                <table class="table table-hover bg-light w-75 m-auto rounded-bottom rounded-top" id="CategoryTable">
+                    <thead style="border-top:none; border-radius:10px">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Products</th>
+                            <th scope="col" class="text-center">Action</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- include jquery libraries -->
+@section Scripts {
+    <script type="text/javascript">
+
+
+        //Page load functions to start eventListeners
+        $(document).ready(function () {
+
+            //Load the table data
+            getCategoryData();
+
+            //Event Listener for Category Input Field
+            $('table').on('click', '#addCategory', function (e) {
+                e.preventDefault();
+                //$(this) refers to #addCategory element.
+                //Parent element of '#addCategory' is '<td>'
+                //Parent element of that is '<td>'. We are trying to get the Id of '<tr>' element, which is the 'CategoryId' value. 
+                //So, clicking on '#addCategory' button submits the 'CategoryName'
+                var categoryId = $(this).parent().parent().attr('id');
+                var categoryName = $("#" + categoryId).find("td:eq(1)").find('input').val(); //There is only one input field in the whole page.So this would be the value of "CategoryInput" 
+                createCategory(categoryName);// Send the 'CategoryName' to the 'ProductsController'
+            });
+
+            //Event Listener for deleteCategory buttons
+            $('table').on('click', '#deleteCategory', function (e) {
+                e.preventDefault();
+                //$(this) refers to #deleteCategory element.
+                //Parent element of '#deleteCategory' is '<td>'
+                //Parent element of that is '<td>'. We are trying to get the Id of '<tr>' element, which is the 'CategoryId' value. 
+                //So, clicking on '#deleteCategory' button submits the 'CategoryId'
+                var categoryId = $(this).parent().parent().attr('id'); 
+                deleteCategory(categoryId);// Send the 'CategoryId' to the 'ProductsController'
+            });
+
+            //Event Listener for editCategory buttons
+            $('table').on('click', '#editCategory', function (e) {
+                e.preventDefault();
+                //$(this) refers to #editCategory element.
+                //Parent element of '#editCategory' is '<td>'
+                //Parent element of that is '<td>'. We are trying to get the Id of '<tr>' element, which is the 'CategoryId' value. 
+                //So, clicking on '#editCategory' button submits the 'CategoryId' and 'CategoryName'
+                var categoryId = $(this).parent().parent().attr('id'); 
+                var categoryName = $("#" + categoryId).find("td:eq(1)").text(); //Go to second <td> element inside <tr> element
+                editCategory(categoryId, categoryName);// Send the 'categoryId' and categoryName to the 'editCategory()' function
+            });
+
+            //Event Listener for updateCategory buttons
+            $('table').on('click', '#updateCategory', function (e) {
+                e.preventDefault();
+                //$(this) refers to #updateCategory element.
+                //Parent element of '#updateCategory' is '<td>'
+                //Parent element of that is '<td>'. We are trying to get the Id of '<tr>' element, which is the 'CategoryId' value. 
+                //So, clicking on '#updateCategory' button submits the 'categoryId' and 'categoryName'
+                var categoryId = $(this).parent().parent().attr('id');
+                var categoryName = $("#" + categoryId).find("td:eq(1)").find('input').val(); //get the input value at second <td> element of <tr> 
+                updateCategory(categoryId, categoryName);// Send the 'categoryId' and 'categoryName' to the 'updateCategory()' function
+            });
+
+        });
+
+        //Update editted Category with categoryName and categoryId 
+        //Id will be auto - generated when new ProductCategory object is created at 'UpdateCategory()' method of 'ProductsController'
+        function updateCategory(categoryId, categoryName) {
+            $.post("/Products/UpdateCategory", { id: categoryId, name: categoryName })
+                .done(function (data) {
+                    //check the response from the ProductsController. If posted 'CategoryName' is equal to the response, update 'CategoryTable'
+                    //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window
+                    (String(categoryId).toLowerCase() == String(data).toLowerCase()) ? getCategoryData() : alert("Error! " + data); //check for errors
+                });
+        }
+
+
+        //Replace table row with an input field for editting purposes
+        function editCategory(categoryId, categoryName)
+        {
+            var newElement = '<tr id="' + categoryId + '">' +
+                '<td class="align-middle">' + categoryId + '</td>' +
+                '<td class="align-middle"> <input "class="form-control" type = "text" placeholder = "Enter category name" value="' + categoryName + '"/> </td>' +
+                '<td class="align-middle"> No Product </td>' +
+                '<td class="align-middle text-center" style="white-space: nowrap;">' +
+                '<button class="categoryButton" id="updateCategory"> <span> <i class="fas fa-save"></i> </span> </button> </td> </tr>';
+            categoryId = "#" + categoryId;
+            $(categoryId).replaceWith(newElement);
+        }
+
+        //Get Categories json data from the controller
+        function getCategoryData() {
+            $.get("/Products/GetCategory").done(function (data) { //get request is made to 'UpdateCategory' method at 'ProductsController'
+
+                //check to see if json data coming from the controller is null or empty, if it's null or empty hide the 'CategoryTable'
+                console.log("data.length:  " + data.length);
+                if (data.length == 0) {
+                    $('#noData').removeAttr('hidden');
+                    $('#CategoryTable').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
+                    insertInputRow(0);
+                }
+                else {
+                    var categoryArray = JSON.parse(data); //parse JSON object into JavaScript object
+                    var Id = categoryArray[categoryArray.length - 1].Id; //Get the Id of last Category Object
+                    $('#CategoryTable').empty(); //clear out CategoryTable before inserting rows to avoid duplicates
+                    insertInputRow(Id); //Insert Category input field as the first row of the 'CategoryTable'
+                    categoryArray.forEach(insertRow); //send the JavaScript array object to 'insertRow' function
+                }
+            }, "json");
+        }
+
+        //Create 'category' rows and append 'category' data to the table rows
+        function insertRow(item) {
+            var productNames = null;
+            (item.ProductNames.length !=0 ) ? productNames = item.ProductNames : productNames = "No Product"; //check to see if Category has a any products attached
+
+            var newElement = '<tr id="' + item.Id + '">' +
+                    '<td class="align-middle">' + item.Id + '</td>' +
+                    '<td class="align-middle">' + item.Name + '</td>' +
+                    '<td class="align-middle">' + productNames + '</td>' +
+                    '<td class="align-middle text-center" style="white-space: nowrap;">' +
+                    '<button class="categoryButton" id="editCategory"> <span> <i class="far fa-edit"></i> </span> </button>' +
+                    '<button class="categoryButton" id="deleteCategory"> <span> <i class="fas fa-trash-alt"></i> </span> </button> </td> </tr>';
+
+            $('#CategoryTable').append(newElement);
+        }
+
+        //Insert Category row with input field
+        function insertInputRow(id) {
+            id++;
+            var newElement = '<tr id="' + id + '">' +
+                '<td class="align-middle">' + id + '</td>' +
+                '<td class="align-middle"> <input "class="form-control" type = "text" placeholder = "Enter new category"/> </td>' +
+                '<td class="align-middle"> No Product </td>' +
+                '<td class="align-middle text-center" style="white-space: nowrap;">' +
+                '<button class="categoryButton" id="addCategory"> <span> <i class="fas fa-plus-circle"></i> </span> </button> </td> </tr>';
+            $("#CategoryTable").append(newElement);
+        }
+
+        //Add new Category with categoryName
+        //Id will be auto - generated when new ProductCategory object is created at 'AddCategory()' method of 'ProductsController'
+        function createCategory(categoryName) {
+            $.post("/Products/AddCategory", { name: categoryName})
+                .done(function (data) {
+                    //check the response from the ProductsController. If posted 'CategoryName' is equal to the response, update 'CategoryTable'
+                    //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window
+                    (String(categoryName).toLowerCase() == String(data).toLowerCase()) ? getCategoryData() : alert("Error! " + data); //check for errors
+                });   
+        }
+
+        //Delete a Category using categoryId
+        function deleteCategory(categoryId) {
+            $.post("/Products/DeleteCategory", { id: categoryId })
+                .done(function (data) {
+                    //check the response from the ProductsController. If posted 'CategoryId' is equal to the response, update 'CategoryTable'
+                    //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window
+                    (String(categoryId).toLowerCase() == String(data).toLowerCase()) ? getCategoryData() : alert("Error! " + data); //check for errors
+                }); 
+        }
+
+    </script>
+}
+

@@ -59,52 +59,50 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- Profile Picture input -->
-            <div class="form-group text-center m-auto">
+            <div class="form-group profile-container justify-content-center d-flex">
 
-                @if (Model.Input.ProfilePicture != null)
+
+                <img class="profile-img rounded" id="profilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.Input.ProfilePicture))">
+
+                <!--Check to see if user profile picture is the default avatar picture,Hide Delete button if user profile picture is the default avatar picture,only option should be upload a new picture-->
+                @if (Model.DefaultPicture.Length != Model.Input.ProfilePicture.Length)
                 {
-                    <img id="profilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.Input.ProfilePicture))">
-                }
-                else
-                {
-                    <img id="profilePicture" src="http://cdn.onlinewebfonts.com/svg/img_508630.png">
+                    <!--Delete picture button-->
+                    <a class="remove-image" style="display: inline; top: 0px; right: 0px;" href="#">&#215;</a>
+
                 }
 
-                <input class="form-control profile-img" type="file" id="file" accept=".png,.jpg,.jpeg,.gif,.tif" asp-for="Input.ProfilePicture"/>
+                <!--Hidden input is used to let "index.cshtml.cs" know of the delete action. "Input.DeletePicture" field is false boolean by default. When delete button is clicked, below JQquery code changes the value of this field to "true" and submits the form-->
+                <input class="form-control" id="deletePicture" asp-for="Input.DeletePicture" value="false" type="hidden" />
+
+                <input class="upload-img" type="file" id="file" accept=".png,.jpg,.jpeg,.gif,.tif" asp-for="Input.ProfilePicture" />
                 <span asp-validation-for="Input.ProfilePicture" class="text-danger"></span>
             </div>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
 
-    <script type="text/javascript">
-        // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        });
+        <script type="text/javascript">
+   
+            $('#file').on('change', function () {
+                var url = URL.createObjectURL(this.files[0]);
+                $('#profilePicture').attr("src", url);
+                $("#update-profile-button").trigger('click'); //submit the form
+            });
 
-        $('#file').on('change', function () {
-            var url = URL.createObjectURL(this.files[0]);
-            $('#profilePicture').attr("src", url);
+            $('.remove-image').click(function () {
+    @*            $(this).hide();
+                var url = $('#defaultPicture').attr('src');
+                $('#profilePicture').attr("src", url);*@
+                $('#deletePicture').val(true); //set the value of Input.DeletePicture to "true" so that defaul avatar picture can be uploaded to user table.
+                $("#update-profile-button").trigger('click'); //submit the form
+            });
 
-        });
-
-    @*    function ImgSource() {
-            document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0]);
-        }
-
-        document.getElementById('file').onchange = function () {
-            var url = URL.createObjectURL(this.files[0]);
-            console.log(url);
-            document.getElementById('profilePicture').src = url;
-        };*@
-
-    </script>
+        </script>
 
 
 
-}
+    }

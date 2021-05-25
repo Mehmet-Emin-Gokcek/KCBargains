@@ -28,10 +28,13 @@ namespace KCBargains
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
-            services.AddControllersWithViews();
-            // services.AddDbContext<EventDbContext>(options =>
+
+            services.AddControllersWithViews().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+            });            // services.AddDbContext<EventDbContext>(options =>
             //    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddRazorPages();
 
             services.Configure<IdentityOptions>(options =>

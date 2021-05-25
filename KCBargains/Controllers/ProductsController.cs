@@ -13,15 +13,18 @@ using SixLabors.ImageSharp.Processing;
 using System.Collections.Generic;
 using SixLabors.ImageSharp.PixelFormats;
 using KCBargains.Data;
+using System.Collections;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace KCBargains.Controllers
 {
-    public class ProductsController : Controller{
+    public class ProductsController : Controller
+    {
 
         private readonly BargainsDbContext context;
 
         private readonly IWebHostEnvironment webHostEnvironment;
-
 
         public ProductsController(BargainsDbContext dbContext, IWebHostEnvironment hostEnvironment)
         {
@@ -47,65 +50,63 @@ namespace KCBargains.Controllers
                 id = (int)TempData["ProductID"];
             }
 
-            Product product = context.Products
-                .Include(e => e.Category)
-                .Include(e => e.Retailer)
-                .Single(e => e.Id == id);
+            Product product = context.Products.Include(e => e.Category).Include(e => e.Retailer).Single(e => e.Id == id);
             return View(product);
         }
-
 
         public IActionResult Add()
         {
             List<ProductCategory> categories = context.ProductCategories.ToList();
 
-
             Retailer retailer = new Retailer();
 
-            AddProductViewModel addProductViewModel = new AddProductViewModel(categories, retailer);
+            ProductViewModel productViewModel = new ProductViewModel(categories, retailer);
 
-            return View(addProductViewModel);
+            return View(productViewModel);
         }
 
-
         [HttpPost]
-        public IActionResult Add(AddProductViewModel addProductViewModel)
+        public IActionResult Add(ProductViewModel productViewModel)
         {
-
             if (ModelState.IsValid)
             {
                 //Find the product category from database
-                ProductCategory category = context.ProductCategories.Find(addProductViewModel.CategoryId);
+                ProductCategory category = context.ProductCategories.Find(productViewModel.CategoryId);
 
                 Retailer retailer = new Retailer
                 {
-                    Name = addProductViewModel.Retailer.Name,
-                    Street = addProductViewModel.Retailer.Street,
-                    City = addProductViewModel.Retailer.City,
-                    State = addProductViewModel.Retailer.State,
-                    Zipcode = addProductViewModel.Retailer.Zipcode,
-                    Latitude = addProductViewModel.Retailer.Latitude,
-                    Longitude = addProductViewModel.Retailer.Longitude
+                    Name = productViewModel.Retailer.Name,
+                    Street = productViewModel.Retailer.Street,
+                    City = productViewModel.Retailer.City,
+                    State = productViewModel.Retailer.State,
+                    Zipcode = productViewModel.Retailer.Zipcode,
+                    Latitude = productViewModel.Retailer.Latitude,
+                    Longitude = productViewModel.Retailer.Longitude
                 };
 
-                string[] uniqueFileName = UploadPhoto(addProductViewModel);//returns unique names of uploaded images
+                Console.WriteLine("retailer.Latitude: " + retailer.Latitude);
+                Console.WriteLine("retailer.Longitude: " + retailer.Longitude);
+
+
+                string[] pictureList = UploadPicture(productViewModel);//returns list of uploaded pictures
+
 
                 //Find signed in user from database
-                ApplicationUser SignedUser = context.Users.Find(addProductViewModel.UserId);
+                ApplicationUser SignedUser = context.Users.Find(productViewModel.UserId);
 
                 Product product = new Product
                 {
-                    Name = addProductViewModel.Name,
-                    Description = addProductViewModel.Description,
-                    Quantity = addProductViewModel.Quantity,
-                    Cost = addProductViewModel.Cost,
-                    Picture = uniqueFileName[0],
-                    Picture2 = uniqueFileName[1],
-                    Picture3 = uniqueFileName[2],
-                    Picture4 = uniqueFileName[3],
+                    Name = productViewModel.Name,
+                    Description = productViewModel.Description,
+                    Quantity = productViewModel.Quantity,
+                    Cost = productViewModel.Cost,
                     User = SignedUser,
                     Category = category,
-                    Retailer = retailer
+                    Retailer = retailer,
+                    Picture1 = pictureList[0],
+                    Picture2 = pictureList[1],
+                    Picture3 = pictureList[2],
+                    Picture4 = pictureList[3],
                 };
 
                 context.Retailers.Add(retailer);
@@ -114,26 +115,130 @@ namespace KCBargains.Controllers
 
                 return Redirect("/Products");
             }
+            //reload category list options to make sure they will appear after the data validation errors
+            List<ProductCategory> categories = context.ProductCategories.ToList();
 
+            //passing new empty Model Object with categories list options
+            return View(new ProductViewModel(categories, new Retailer())); 
+        }
 
-            List<ProductCategory> categories = context.ProductCategories.ToList(); //reload category list options to make sure they will appear after the data validation errors
+        public IActionResult Edit(int Id)
+        {
+            // Pull the Product object that will be edited from the database
+            Product theProduct = context.Products.Find(Id);
+            Retailer theRetailer = context.Retailers.Find(theProduct.RetailerId);
+            ProductCategory theCategory = context.ProductCategories.Find(theProduct.CategoryId);
 
-            return View(new AddProductViewModel(categories, new Retailer())); //passing new Model Object with categories list options
+            //Make sure category list will show up 
+            List<ProductCategory> categories = context.ProductCategories.ToList();
+
+            //Update productViewModel fields before returning it to the Edit View
+            ProductViewModel productViewModel = new ProductViewModel(categories, theRetailer)
+            {
+                Name = theProduct.Name,
+                Description = theProduct.Description,
+                Quantity = theProduct.Quantity,
+                Cost = theProduct.Cost,
+                Picture1 = theProduct.Picture1,
+                Picture2 = theProduct.Picture2,
+                Picture3 = theProduct.Picture3,
+                Picture4 = theProduct.Picture4,
+                Category = theCategory,
+                CategoryId = theCategory.Id,
+                RetailerId = theRetailer.Id,
+                ProductId = Id
+            };
+            return View(productViewModel);
         }
 
 
+        [HttpPost]
+        public IActionResult Edit(ProductViewModel productViewModel)
+        {
+            //Find the category from database
+            ProductCategory category = context.ProductCategories.Find(productViewModel.CategoryId);
+
+            if (ModelState.IsValid)
+            {
+                //Find the retailer from database
+                Retailer retailer = context.Retailers.Find(productViewModel.RetailerId);
+
+                //Find the product from database
+                Product product = context.Products.Find(productViewModel.ProductId);
+
+                //Update the Retailer Object
+                retailer.Name = productViewModel.Retailer.Name;
+                retailer.Street = productViewModel.Retailer.Street;
+                retailer.City = productViewModel.Retailer.City;
+                retailer.State = productViewModel.Retailer.State;
+                retailer.Zipcode = productViewModel.Retailer.Zipcode;
+                retailer.Latitude = productViewModel.Retailer.Latitude;
+                retailer.Longitude = productViewModel.Retailer.Longitude;
+
+                string[] pictureList = UploadPicture(productViewModel);//returns list of uploaded pictures
+
+                if (pictureList[0] != null) //means a new picture is being uploaded
+                {
+                    productViewModel.Picture1 = pictureList[0];
+                }
+
+                if (pictureList[1] != null) //means a new picture is being uploaded
+                {
+                    productViewModel.Picture2 = pictureList[1];
+                }
+
+                if (pictureList[2] != null) //means a new picture is being uploaded
+                {
+                    productViewModel.Picture3 = pictureList[2];
+                }
+
+                if (pictureList[3] != null) //means a new picture is being uploaded
+                {
+                    productViewModel.Picture4 = pictureList[3];
+                }
+
+                //Update the Product Object
+                product.Name = productViewModel.Name;
+                product.Description = productViewModel.Description;
+                product.Quantity = productViewModel.Quantity;
+                product.Cost = productViewModel.Cost;
+                product.Picture1 = productViewModel.Picture1;
+                product.Picture2 = productViewModel.Picture2;
+                product.Picture3 = productViewModel.Picture3;
+                product.Picture4 = productViewModel.Picture4;
+                product.CategoryId = category.Id;
+                product.RetailerId = retailer.Id;
+                product.Category = category;
+                product.Retailer = retailer;
+
+                context.Retailers.Update(retailer);
+                context.Products.Update(product);
+                context.SaveChanges();
+
+                TempData.Add("ProductID", productViewModel.ProductId); //Pass Product ID data to Detail View
+                return RedirectToAction("Detail");
+            }
+
+            //reload category list options to make sure they will appear after the data validation errors
+            List<ProductCategory> categories = context.ProductCategories.ToList(); 
+            productViewModel.Categories = productViewModel.CategoryUpdate(categories);
+
+            //passing new Model Object with categories list options
+            return View(productViewModel); 
+        }
+
         //Uploading, Resizing and Saving Product Pictures
-        public string[] UploadPhoto(AddProductViewModel model)
+        public string[] UploadPicture(ProductViewModel model)
         {
             IFormFile[] fileArr = new IFormFile[4];//store all files in an array
-            fileArr[0] = model.ProductPicture;
+            fileArr[0] = model.ProductPicture1;
             fileArr[1] = model.ProductPicture2;
             fileArr[2] = model.ProductPicture3;
             fileArr[3] = model.ProductPicture4;
 
             string[] imageArr = new string[4]; //store all unique photo names in an array to be returned
 
-            for( int i = 0; i < fileArr.Length; i++)
+            for (int i = 0; i < fileArr.Length; i++)
             {
                 if (fileArr[i] != null)
                 {
@@ -147,7 +252,7 @@ namespace KCBargains.Controllers
                     var finalWidth = size.Width - (size.Width % 4); //gets a width value divisible by 4
                     var finalHeight = size.Height - (size.Height % 3); //gets a height value divisible by 3
 
-                    if (finalHeight/3 < finalWidth/4) //limitin factor is height
+                    if (finalHeight / 3 < finalWidth / 4) //limitin factor is height
                     {
                         finalWidth = finalHeight / 3 * 4; //calculate new width to reach 4:3 aspect ratio
                         var x = (size.Width / 2) - finalWidth / 2; //calculate x coordinate of top left corner of the crop box
@@ -163,11 +268,11 @@ namespace KCBargains.Controllers
                     {
                         finalWidth = finalHeight / 3 * 4; //calculate new width to reach 4:3 aspect ratio
                         image.Mutate(img => img.Resize(new ResizeOptions
-                         {
-                             Mode = ResizeMode.BoxPad, //initiate padding mode
-                             Position = AnchorPositionMode.Center, //padding should start from the center
-                             Size = new Size(finalWidth, finalHeight) //final size will use finalWidth and finalHeight
-                         }).BackgroundColor(new Rgba32(255, 255, 255)));//add white background padding, default background padding is black
+                        {
+                            Mode = ResizeMode.BoxPad, //initiate padding mode
+                            Position = AnchorPositionMode.Center, //padding should start from the center
+                            Size = new Size(finalWidth, finalHeight) //final size will use finalWidth and finalHeight
+                        }).BackgroundColor(new Rgba32(255, 255, 255)));//add white background padding, default background padding is black
                     }
                     image.Save(filePath); //save the image to the path created above
                 }
@@ -175,144 +280,133 @@ namespace KCBargains.Controllers
             return imageArr;
         }
 
-        public IActionResult Edit(int Id)
+
+        //Return empty view, get and post requests will be handled by AJAX on the 'Category.cshtml' view file 
+        public IActionResult Category()
         {
-            // Pull the Product object that will be edited from the database
-            Product theProduct = context.Products.Find(Id);
-            Retailer theRetailer = context.Retailers.Find(theProduct.RetailerId);
-            ProductCategory theCategory = context.ProductCategories.Find(theProduct.CategoryId);
+            return View();
+        }
 
-            //Make sure category list will show up 
-            List<ProductCategory> categories = context.ProductCategories.ToList();
+        public ContentResult UpdateCategory(string id, string name) {
+            int ID = 0;
+            string response = $"DeleteCategory() Error!!!  Product Id: {id}, Product Name: {name} input is either null or empty!";
 
-            //Update addProductViewModel fields before returning it to the Edit View
-            AddProductViewModel addProductViewModel = new AddProductViewModel(categories, theRetailer)
+            if (!String.IsNullOrEmpty(id) && !String.IsNullOrEmpty(name))
             {
-                Name = theProduct.Name,
-                Description = theProduct.Description,
-                Quantity = theProduct.Quantity,
-                Cost = theProduct.Cost,
-                Picture = theProduct.Picture,
-                Picture2 = theProduct.Picture2,
-                Picture3 = theProduct.Picture3,
-                Picture4 = theProduct.Picture4,
-                Category = theCategory,
-                CategoryId = theProduct.Category.Id,
-                Retailer = theProduct.Retailer,
-                RetailerId = theRetailer.Id,
-                ProductId = Id
-            };
+                try
+                {
+                    ID = Int32.Parse(id);
 
-            return View(addProductViewModel);
+                    Console.WriteLine($" Product Id: '{ID}' has been parsed successfully");
+
+                    //check to see if a ProductCategory table contains a 'ProductCategory' object with the parsed ID
+                    if (context.ProductCategories.Any(c => c.Id == ID))
+                    {
+                        ProductCategory category = context.ProductCategories.Find(ID);
+                        category.Name = name;
+                        context.ProductCategories.Update(category);
+                        context.SaveChanges();
+                        response = ID.ToString();
+                    }
+
+                    else
+                    {
+                        response = ($"DeleteCategory() Error!!! Product Id: '{ID}' could not be found in the database!");
+                    }
+                }
+                catch (FormatException)
+                {
+                    response = ($"DeleteCategory() Error!!! Product Id: '{id}' could not be parsed!");
+                }
+            }
+            return Content(response);
+        }
+
+
+
+        public ContentResult DeleteCategory(string id) {
+            int ID = 0;
+            string response = $"DeleteCategory() Error!!!  Product Id: {id} input is either null or empty!";
+
+            if (!String.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    ID = Int32.Parse(id);
+
+                    Console.WriteLine($" Product Id: '{ID}' has been parsed successfully");
+
+                    //check to see if a ProductCategory table contains a 'ProductCategory' object with the parsed ID
+                    if (context.ProductCategories.Any(c => c.Id == ID)) 
+                    {
+                        ProductCategory category = context.ProductCategories.Find(ID);
+                        context.ProductCategories.Remove(category);
+                        context.SaveChanges();
+                        response = ID.ToString();
+                    }
+
+                    else
+                    {
+                        response = ($"DeleteCategory() Error!!! Product Id: '{ID}' could not be found in the database!");
+                    }
+                }
+                catch (FormatException)
+                {
+                    response = ($"DeleteCategory() Error!!! Product Id: '{id}' could not be parsed!");
+                }
+            }
+            return Content(response);
         }
 
 
         [HttpPost]
-        public IActionResult Edit(AddProductViewModel addProductViewModel)
+        public ContentResult AddCategory(string name)
         {
+            string response = $"AddCategory() Error!!! Name: {name} Input is either null or empty!";
 
-            if (ModelState.IsValid)
+            if (!String.IsNullOrEmpty(name))
             {
-
-                //Find the retailer from database
-                Retailer retailer = context.Retailers.Find(addProductViewModel.RetailerId);
-
-                //Find the category from database
-                ProductCategory category = context.ProductCategories.Find(addProductViewModel.CategoryId);
-
-                //Find the product from database
-                Product product = context.Products.Find(addProductViewModel.ProductId);
-                
-                //Update the Retailer Object
-                retailer.Name = addProductViewModel.Retailer.Name;
-                retailer.Street = addProductViewModel.Retailer.Street;
-                retailer.City = addProductViewModel.Retailer.City;
-                retailer.State = addProductViewModel.Retailer.State;
-                retailer.Zipcode = addProductViewModel.Retailer.Zipcode;
-                retailer.Latitude = addProductViewModel.Retailer.Latitude;
-                retailer.Longitude = addProductViewModel.Retailer.Longitude;
-
-
-
-                string[] uniqueFileName = UploadPhoto(addProductViewModel);//returns unique names of uploaded images
-
-                if (uniqueFileName[0] != null) //means a new picture is being uploaded
+                if (!context.ProductCategories.Any(c => c.Name == name))
                 {
-                    addProductViewModel.Picture = uniqueFileName[0];
+                    ProductCategory category = new ProductCategory(name);
+                    context.ProductCategories.Add(category);
+                    context.SaveChanges();
+                    response = name;
                 }
-
-                if (uniqueFileName[1] != null) //means a new picture is being uploaded
+                else
                 {
-                    addProductViewModel.Picture2 = uniqueFileName[1];
+                    response= $"AddCategory() Error!!!  Product Name: {name} already exists in the database. Please create a unique category!";
                 }
-
-                if (uniqueFileName[2] != null) //means a new picture is being uploaded
-                {
-                    addProductViewModel.Picture3 = uniqueFileName[2];
-                }
-
-                if (uniqueFileName[3] != null) //means a new picture is being uploaded
-                {
-                    addProductViewModel.Picture4 = uniqueFileName[3];
-                }
-
-                //Update the Product Object
-                product.Name = addProductViewModel.Name;
-                product.Description = addProductViewModel.Description;
-                product.Quantity = addProductViewModel.Quantity;
-                product.Cost = addProductViewModel.Cost;
-                product.Picture = addProductViewModel.Picture;
-                product.Picture2 = addProductViewModel.Picture2;
-                product.Picture3 = addProductViewModel.Picture3;
-                product.Picture4 = addProductViewModel.Picture4;
-                product.Category.Id = category.Id;
-                product.Retailer.Id = retailer.Id;
-
-
-
-                context.Retailers.Update(retailer);
-                context.Products.Update(product);
-                context.SaveChanges();
-
-                TempData.Add("ProductID", addProductViewModel.ProductId); //Pass Product ID data to Detail View
-
-                return RedirectToAction("Detail");
             }
-
-                List<ProductCategory> categories = context.ProductCategories.ToList(); //reload category list options to make sure they will appear after the data validation errors
-                addProductViewModel.Categories = addProductViewModel.CategoryUpdate(categories);
-                //Find the category from database
-/*                ProductCategory category = context.ProductCategories.Find(addProductViewModel.CategoryId);
-                //Make sure to update Product Category  
-                addProductViewModel.Category = category;*/
-
-            return View(addProductViewModel); //passing new Model Object with categories list options
-
-            }
+            return Content(response);
         }
 
+        public ContentResult GetCategory() {
+            
+            string json = "";
+           
+            List<ProductCategory> categories = context.ProductCategories.ToList(); //get all ProductCategories
+            List<Product> productList = context.Products.Include(e => e.Category).ToList(); //get all Products and its related categories
+            List<CategoryViewModel> updatedCategories = new List<CategoryViewModel>();
+            
+            if (categories.Count != 0) {
+                foreach (var category in categories)
+                { //iterate through categories
+                    CategoryViewModel newCategory = new CategoryViewModel(category.Id, category.Name);
 
-   /* //Handles Photo Upload
-    private string UploadedFile(AddProductViewModel model)
-    {
-        string uniqueFileName = null;
-        if (model.ProductPicture != null)
-        {
-            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images"); //create uploads folder path
-            uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProductPicture.FileName; //create a unique file name
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName); //combine uploads folder path and unique file name
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                model.ProductPicture.CopyTo(fileStream);
+                    foreach (var product in productList)
+                    { //We are trying to find the multiple products that relate to one ProductCategory
+
+                        if (category.Id == product.CategoryId) //If found a matching category, add it to the tempArray
+                        {
+                            newCategory.ProductNames.Add(product.Name);
+                        }
+                    }
+                    updatedCategories.Add(newCategory);
+                }
+                   json = JsonConvert.SerializeObject(updatedCategories);
             }
+            return Content(json);
         }
-        else if (model.ProductPicture == null)
-        {
-            Console.WriteLine("model.ProductImage is Null");
-        }
-        return uniqueFileName;
-    }*/
-
-
+    }
 }
-

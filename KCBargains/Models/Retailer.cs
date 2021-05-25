@@ -30,9 +30,6 @@ namespace KCBargains.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
-        private const double homeLatitude = 39.0942823;
-        private const double homeLongitude = -94.5906067;
-
         public Retailer(string name, string street, string city, string state, string zipcode, double latitude, double longitude ) {
 
             Name = name;
@@ -45,9 +42,6 @@ namespace KCBargains.Models
         }
 
         public Retailer() { }
-
-        public double HomeLatitude { get { return homeLatitude; } }
-        public double HomeLongitude { get { return homeLongitude; } }
 
     }
 }

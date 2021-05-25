@@ -5,15 +5,8 @@
     <section class="page-section" id="portfolio">
         <div class="container">
 
-            @*-------Header Text---------*@
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Best Deals Here</h2>
-                <h3 class="section-subheading text-muted mb-5">Find the best deals of Kansas City here!</h3>
-            </div>
-
-            @if (Model.Count == 0) //If no deal or product is present
+            @if (Model.Count == 0 || Model == null) //If no deal or product is present
             {
-
                 <div class="text-center">
                     <h2 class="section-heading text-uppercase">No deals yet!</h2>
                     <h3 class="section-subheading text-muted mb-3">Click below button to add a deal.</h3>
@@ -25,11 +18,15 @@
                         <a class="btn btn-primary btn-xl text-uppercase" asp-controller="Products" asp-action="Add">Add a Deal</a>
                     </div>
                 </div>
-
             }
 
             else
             {
+                @*-------Header Text---------*@
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Best Deals Here</h2>
+                    <h3 class="section-subheading text-muted mb-5">Find the best deals of Kansas City here!</h3>
+                </div>
 
                 @*-------Products Information---------*@
                 <div class="container pb-5 mb-sm-1">
@@ -60,20 +57,20 @@
                                                 </ol>
 
 
-                                                <div class="carousel-inner ">
+                                                <div class="carousel-inner">
 
                                                     @*-----check to see if the deal has a picture---*@
-                                                    @if (@product.Picture != null)
+                                                    @if (@product.Picture1 != null)
                                                     {
                                                         <div class="carousel-item active">
-                                                            <img id="myImg" class="d-block img-fluid rounded" src="~/images/@product.Picture" alt="First slide" asp-append-version="true">
+                                                            <img id="Picture1" class="d-block img-fluid rounded" src="~/images/@product.Picture1" alt="First slide" asp-append-version="true">
                                                         </div>
                                                     }
 
                                                     @*-----If there is no picture uploaded use the default picture---*@
                                                     else
                                                     { <div class="carousel-item active">
-                                                            <img id="myImg" class="d-block img-fluid rounded" src="~/images/defaultPicture.jpg" alt="First slide" asp-append-version="true">
+                                                            <img id="Default" class="d-block img-fluid rounded" src="~/images/defaultPicture.jpg" alt="Default Picture" asp-append-version="true">
                                                         </div>
 
                                                     }
@@ -82,7 +79,7 @@
                                                     @if (@product.Picture2 != null)
                                                     {
                                                         <div class="carousel-item">
-                                                            <img id="myImg" class="d-block img-fluid rounded" src="~/images/@product.Picture2" alt="Second slide" asp-append-version="true">
+                                                            <img id="Picture2" class="d-block img-fluid rounded" src="~/images/@product.Picture2" alt="Second slide" asp-append-version="true">
                                                         </div>
                                                     }
 
@@ -90,7 +87,7 @@
                                                     @if (@product.Picture3 != null)
                                                     {
                                                         <div class="carousel-item">
-                                                            <img id="myImg" class="d-block img-fluid rounded" src="~/images/@product.Picture3" alt="Third slide" asp-append-version="true">
+                                                            <img id="Picture3" class="d-block img-fluid rounded" src="~/images/@product.Picture3" alt="Third slide" asp-append-version="true">
                                                         </div>
                                                     }
 
@@ -98,7 +95,7 @@
                                                     @if (@product.Picture4 != null)
                                                     {
                                                         <div class="carousel-item">
-                                                            <img id="myImg" class="d-block img-fluid rounded" src="~/images/@product.Picture4" alt="Third slide" asp-append-version="true">
+                                                            <img id="Picture4" class="d-block img-fluid rounded" src="~/images/@product.Picture4" alt="Third slide" asp-append-version="true">
                                                         </div>
                                                     }
                                                 </div>
@@ -133,7 +130,7 @@
                         <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <div class="modal-body">
+                                    <div class="modal-body" id="modalbody">
                                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                                         <img src="" class="imagepreview rounded" style="width: 100%;">
                                     </div>
@@ -142,18 +139,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Retailer Locations-->
+                <div class="container pt-xl-5">
+                    <div class="text-center">
+                        <h2 class="section-heading text-uppercase">Product Map</h2>
+                        <h3 class="section-subheading text-muted mb-3">Find the locations of all deals below.</h3>
+                    </div>
+                    <div id="GoogleMaps" style="width:100%;height:400px;"></div>
+                </div>
             }
 
-            <!-- Retailer Locations-->
-            <div class="container pt-xl-5">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Product Map</h2>
-                    <h3 class="section-subheading text-muted mb-3">Find the locations of all deals below.</h3>
-                </div>
-                <div id="GoogleMaps" style="width:100%;height:400px;"></div>
-            </div>
         </div>
-</section>
+    </section>
 </div>
 
 
@@ -171,30 +169,29 @@
 
         //Google Maps
         function initMap() {
-        var bounds = new google.maps.LatLngBounds();
-        const map = new google.maps.Map(document.getElementById("GoogleMaps"), {
-            zoom: 8,
-            center: { lat: @Model[0].Retailer.HomeLatitude, lng: @Model[0].Retailer.HomeLongitude },
-        });
-        bounds.extend({ lat:  @Model[0].Retailer.HomeLatitude, lng: @Model[0].Retailer.HomeLongitude});
+                var bounds = new google.maps.LatLngBounds();
+                const map = new google.maps.Map(document.getElementById("GoogleMaps"), {
+                    zoom: 8,
+                    center: { lat: 39.0942823, lng: -94.5906067 },
+                });
+                bounds.extend({ lat: 39.0942823, lng: -94.5906067 });
 
-             @foreach (var item in Model)
-        {
-            <text>
-        var marker = new google.maps.Marker({
-            position: { lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude },
-            map: map,
-            label:"@item.Name",
-        });
-        bounds.extend({ lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude });
-            </text>
+                     @foreach (var item in Model)
+                {
+                    <text>
+                var marker = new google.maps.Marker({
+                    position: { lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude },
+                    map: map,
+                    label:"@item.Name",
+                });
+                bounds.extend({ lat: @item.Retailer.Latitude, lng: @item.Retailer.Longitude });
+                    </text>
+                }
+                map.fitBounds(bounds);
         }
-        map.fitBounds(bounds);
-    }
 
     </script>
 }
 
-<script defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqXHMNoJJwES8K9SkbOgKejtmsH52QlYo&callback=initMap&libraries=&v=weekly">
-</script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqXHMNoJJwES8K9SkbOgKejtmsH52QlYo&callback=initMap&libraries=&v=weekly"></script>
+

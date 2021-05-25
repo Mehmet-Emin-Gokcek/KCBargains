@@ -111,7 +111,7 @@ namespace KCBargains.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Picture")
+                    b.Property<string>("Picture1")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Picture2")

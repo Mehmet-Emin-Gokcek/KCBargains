@@ -1,5 +1,5 @@
 ﻿
-@model AddProductViewModel;
+@model ProductViewModel;
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 
@@ -17,95 +17,92 @@
         </div>
 
         @*-------enctype="multipart/form-data" is required to process both file upload and webform text data----------*@
-        <form enctype="multipart/form-data" aps-controller="Products" asp-action="Add" method="post">
+    <form enctype="multipart/form-data" aps-controller="Products" asp-action="Add" method="post">
 
-            @*-------Passing User Id to see who created the product----------*@
-            <input asp-for="UserId" type="text" value="@user.Id" hidden />
+        @*-------Passing User Id to see who created the product as hidden----------*@
+        <input asp-for="UserId" type="text" value="@user.Id" hidden />
+
+        <div asp-validation-summary="All" class="text-danger"></div>
 
 
-            @*-------Product Information----------*@
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Name"></label>
-                    <input class="form-control" asp-for="Name" type="text" placeholder="Enter product name" />
-                    <span asp-validation-for="Name"></span>
-                </div>
+        @*-------Product Information----------*@
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Name"></label>
+                <input class="form-control" asp-for="Name" type="text" placeholder="Enter product name" />
+            </div>
 
-                <div class="form-group col-md-6">
-                    <label asp-for="Description"></label>
-                    <input class="form-control" asp-for="Description" type="text" placeholder="Enter product description" />
-                    <span asp-validation-for="Description"></span>
+            <div class="form-group col-md-6">
+                <label asp-for="Description"></label>
+                <input class="form-control" asp-for="Description" type="text" placeholder="Enter product description" />
+            </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label asp-for="Quantity">Quantity</label>
+                <input class="form-control" asp-for="Quantity" type="text" placeholder="Enter weight or quantity" />
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="Cost">Price ($)</label>
+                <input class="form-control cost-input" asp-for="Cost" type="text" placeholder="Enter price/cost" value="" />
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="CategoryId">Category Type</label>
+                <select class="form-control" asp-for="CategoryId" asp-items="Model.Categories">
+                    <option value="">Pick a Category</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="ProductPicture1" class="control-label">Product Picture 1</label>
+                <div class="custom-file">
+                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture1" name="ProductPicture1" type="file" accept=".png,.jpg,.jpeg,.gif,.tif">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
             </div>
 
-
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label asp-for="Quantity">Quantity</label>
-                    <input class="form-control" asp-for="Quantity" type="text" placeholder="Enter weight or quantity" />
-                    <span asp-validation-for="Quantity"></span>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label asp-for="Cost">Price ($)</label>
-                    <input class="form-control" asp-for="Cost" type="text" placeholder="Enter price/cost" />
-                    <span asp-validation-for="Cost"></span>
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label asp-for="CategoryId">Category Type</label>
-                    <select class="form-control" asp-for="CategoryId" asp-items="Model.Categories">
-                        <option value="">Pick a Category</option>
-                    </select>
-                    <span asp-validation-for="CategoryId"></span>
+            <div class="form-group col-md-3">
+                <label asp-for="ProductPicture2" class="control-label">Product Picture 2</label>
+                <div class="custom-file">
+                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture2" name="ProductPicture2" type="file" accept=".png,.jpg,.jpeg,.gif,.tif">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label asp-for="ProductPicture" class="control-label">Product Picture 1</label>
-                    <div class="custom-file">
-                        <input class="custom-file-input" id="customFile" asp-for="ProductPicture">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label asp-for="ProductPicture2" class="control-label">Product Picture 2</label>
-                    <div class="custom-file">
-                        <input class="custom-file-input" id="customFile" asp-for="ProductPicture2">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label asp-for="ProductPicture3" class="control-label">Product Picture 3</label>
-                    <div class="custom-file">
-                        <input class="custom-file-input" id="customFile" asp-for="ProductPicture3">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label asp-for="ProductPicture4" class="control-label">Product Picture 4</label>
-                    <div class="custom-file">
-                        <input class="custom-file-input" id="customFile" asp-for="ProductPicture4">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center p-0 m-0">
-                <h3 class="section-subheading text-muted m-0 p-0">You can upload multiple pictures</h3>
-            </div>
-
-            <div class="container" style="margin-bottom:10px; margin-top:10px">
-                <div class="text-center">
-                    <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#retailer">Add Product</a>
+            <div class="form-group col-md-3">
+                <label asp-for="ProductPicture3" class="control-label">Product Picture 3</label>
+                <div class="custom-file">
+                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture3" name="ProductPicture3" type="file" accept=".png,.jpg,.jpeg,.gif,.tif">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
             </div>
 
+            <div class="form-group col-md-3">
+                <label asp-for="ProductPicture4" class="control-label">Product Picture 4</label>
+                <div class="custom-file">
+                    <input class="custom-file-input" id="customFile" asp-for="ProductPicture4" name="ProductPicture4" type="file" accept=".png,.jpg,.jpeg,.gif,.tif">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-0 m-0">
+            <h3 class="section-subheading text-muted m-0 p-0">You can upload multiple pictures</h3>
+        </div>
 
-            @*-------Retailer Information----------*@
+        <div class="container" style="margin-bottom:10px; margin-top:10px">
+            <div class="text-center">
+                <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#retailer">Add Product</a>
+            </div>
+        </div>
+
+
+        @*-------Retailer Information----------*@
 
         <section class="page-section" style="padding-top:50px" id="retailer">
             <div class="text-center">
@@ -162,7 +159,7 @@
             </div>
         </section>
 
-        </form>
+    </form>
     </section>
 </div>
 
@@ -267,6 +264,8 @@
                 //Save Latitude and Longitude information to the form input element to be saved in the database
                 document.getElementById("latitude").value = lat;
                 document.getElementById("longitude").value = lng;
+                console.log("lng: " + lng);
+                console.log("lat: " + lat);
             } else {
                 alert(
                     "Geocode was not successful for the following reason: " + status

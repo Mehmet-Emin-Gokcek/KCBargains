@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KCBargains.ViewModels
 {
-    public class AddProductViewModel
+    public class ProductViewModel
     {
 
         [Required(ErrorMessage = "Product name is required")]
@@ -26,7 +26,7 @@ namespace KCBargains.ViewModels
 
         [Required(ErrorMessage = "Dollar Price/Cost is required")]
         public double Cost { get; set; }
-        public IFormFile ProductPicture { get; set; }
+        public IFormFile ProductPicture1 { get; set; }
         public IFormFile ProductPicture2 { get; set; }
         public IFormFile ProductPicture3 { get; set; }
         public IFormFile ProductPicture4 { get; set; }
@@ -37,10 +37,10 @@ namespace KCBargains.ViewModels
         public int RetailerId { get; set; }
 
         //This property will be used for Product editting
-        [Required(ErrorMessage = "Signed-in user id could not be found! Contact system administrator!")]
+/*        [Required(ErrorMessage = "Signed-in user id could not be found! Contact system administrator!")]*/
         public string UserId { get; set; }
         public int ProductId { get; set; }
-        public string Picture { get; set; }
+        public string Picture1 { get; set; }
         public string Picture2 { get; set; }
         public string Picture3 { get; set; }
         public string Picture4 { get; set; }
@@ -48,7 +48,7 @@ namespace KCBargains.ViewModels
         public ProductCategory Category { get; set; }
         public List<SelectListItem> Categories { get; set; }
 
-        public AddProductViewModel(List<ProductCategory> categories, Retailer retailer)
+        public ProductViewModel(List<ProductCategory> categories, Retailer retailer)
         {
             Categories = new List<SelectListItem>();
 
@@ -66,7 +66,7 @@ namespace KCBargains.ViewModels
             Retailer = retailer;
         }
 
-        public AddProductViewModel() { }
+        public ProductViewModel() { }
 
         public List<SelectListItem> CategoryUpdate(List<ProductCategory> categories)
 

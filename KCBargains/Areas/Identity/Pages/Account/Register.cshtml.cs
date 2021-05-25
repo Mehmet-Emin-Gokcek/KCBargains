@@ -103,14 +103,18 @@ namespace KCBargains.Areas.Identity.Pages.Account
                 {
                     string filePath = @"wwwroot\images\defaultAvatar.png";
                     //Instantiate FileStream object and pass the filePath to read the image file
-                    FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
-                    //Instantiate MemoryStream object to store the data stream coming from FileStream object
-                    MemoryStream memoryStream = new MemoryStream();                    
-                    await stream.CopyToAsync(memoryStream);
-                    //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
-                    user.ProfilePicture = memoryStream.ToArray();
-                    //Update the User object in database
-                    await _userManager.UpdateAsync(user);
+                    //The using construct ensures that the file will be closed when you leave the block even if an exception is thrown.
+                    using (FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate)) {
+                        //Instantiate MemoryStream object to store the data stream coming from FileStream object
+                        MemoryStream memoryStream = new MemoryStream();
+                        await stream.CopyToAsync(memoryStream);
+                        //Convert the data stored in MemoryStream object to byte[] array, and save it to the ProfilePicture field of the User object. 
+                        user.ProfilePicture = memoryStream.ToArray();
+                        //Update the User object in database
+                        await _userManager.UpdateAsync(user);
+                    }
+                    
+
                 }
 
                 //Upload Profile Picture

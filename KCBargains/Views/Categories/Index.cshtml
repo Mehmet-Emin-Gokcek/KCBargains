@@ -1,6 +1,4 @@
-﻿
-
-<div class="container w-75 p-3">
+﻿<div class="container w-75 p-3">
     <section class="page-section " id="services">
         @*-------Header Text---------*@
         <div class="text-center">
@@ -112,7 +110,7 @@
         //Update editted Category with categoryName and categoryId 
         //Id will be auto - generated when new ProductCategory object is created at 'UpdateCategory()' method of 'ProductsController'
         function updateCategory(categoryId, categoryName) {
-            $.post("/Products/UpdateCategory", { id: categoryId, name: categoryName })
+            $.post("/Categories/UpdateCategory", { id: categoryId, name: categoryName })
                 .done(function (data) {
                     //check the response from the ProductsController. If posted 'CategoryName' is equal to the response, update 'CategoryTable'
                     //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window
@@ -136,7 +134,7 @@
 
         //Get Categories json data from the controller
         function getCategoryData() {
-            $.get("/Products/GetCategory").done(function (data) { //get request is made to 'UpdateCategory' method at 'ProductsController'
+            $.get("/Categories/GetCategory").done(function (data) { //get request is made to 'UpdateCategory' method at 'ProductsController'
 
                 //check to see if json data coming from the controller is null or empty, if it's null or empty hide the 'CategoryTable'
                 console.log("data.length:  " + data.length);
@@ -186,7 +184,7 @@
         //Add new Category with categoryName
         //Id will be auto - generated when new ProductCategory object is created at 'AddCategory()' method of 'ProductsController'
         function createCategory(categoryName) {
-            $.post("/Products/AddCategory", { name: categoryName})
+            $.post("/Categories/AddCategory", { name: categoryName})
                 .done(function (data) {
                     //check the response from the ProductsController. If posted 'CategoryName' is equal to the response, update 'CategoryTable'
                     //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window
@@ -196,7 +194,7 @@
 
         //Delete a Category using categoryId
         function deleteCategory(categoryId) {
-            $.post("/Products/DeleteCategory", { id: categoryId })
+            $.post("/Categories/DeleteCategory", { id: categoryId })
                 .done(function (data) {
                     //check the response from the ProductsController. If posted 'CategoryId' is equal to the response, update 'CategoryTable'
                     //Else forward the error response from the 'ProductsController' to the user as an alert pop-up window

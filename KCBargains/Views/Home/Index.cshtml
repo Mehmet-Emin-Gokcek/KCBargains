@@ -16,7 +16,6 @@
         <div class="text-center">
             <h2 class="section-heading text-uppercase">KCBargains Platform</h2>
             <h3 class="section-subheading text-muted">In the face of increasing e-commerce activity, shopping at local brick and mortar stores provides a crucial way of supporting our communities.</h3>
-  
         </div>
         <div class="row text-center">
             <div class="col-md-4">
@@ -45,6 +44,65 @@
                 <p class="text-muted">Bargain shoppers go to the local stores with the best deals, and by doing so save ton of money and time.</p>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="demoLogin" tabindex="-1" role="dialog" aria-labelledby="demoLoginLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="demoLoginLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <a class="btn btn-info btn-lg" onclick="demoLogin('basicuser')" data-dismiss="modal">Basic User</a>
+                        <a class="btn btn-info btn-lg" onclick="demoLogin('admin')" data-dismiss="modal">Admin</a>
+                        <a class="btn btn-info btn-lg" onclick="demoLogin('superadmin')" data-dismiss="modal">Super Admin</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </section>
 
+
+<!--This will be used for overlay time out animation-->>
+<div id="overlay">
+    <div class="cv-spinner">
+        <span class="spinner"></span>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+        //Make ajax post request to DemoLoginController by submitting admin/superadmin/basic user names
+        function demoLogin(role) {
+            $.post("/DemoLogin/LoginUser", { userRole: role })
+                .done(function (data) {
+                    $("#overlay").fadeOut(1000); //overlay fadeout
+
+                    //Refresh page, otherwise even though user is signed in, the page appears static. 
+                    //DemoLoginController redirecting to Home / Index.cshtml doesn't work.
+                    //After page reload user appears to be signed in.
+                    location.reload(); 
+            });
+        }
+
+        //ajaxSend() fires up when an AJAX request is completed.
+        //With below setup it listens to all ajax requests in the page
+        //But since there is only one ajax request there is no confusion
+        $(document).ready(function () {
+            $(document).ajaxSend(function () {
+                $("#overlay").fadeIn(1000);
+            });
+        });
+    </script>
+}

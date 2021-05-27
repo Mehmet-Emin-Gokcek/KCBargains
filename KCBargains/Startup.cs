@@ -32,8 +32,10 @@ namespace KCBargains
             services.AddControllersWithViews().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-            });            // services.AddDbContext<EventDbContext>(options =>
-            //    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            });            
+            
+            // services.AddDbContext<EventDbContext>(options =>
+            // options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddRazorPages();
 

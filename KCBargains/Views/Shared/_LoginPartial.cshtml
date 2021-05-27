@@ -14,28 +14,28 @@
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
         <ul class="navbar-nav text-uppercase ml-auto">
             <li class="nav-item mr-0 pr-0">
-             @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
-             {
+                @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                {
                     <img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
-             }
+                }
             </li>
             <li class="nav-item ml-0 pl-0">
-                <a class="nav-link js-scroll-trigger" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @FirstName!</a>
+                <a class="nav-link js-scroll-trigger card" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @FirstName!</a>
             </li>
             <li class="nav-item">
-                <button type="submit" class="btn btn-link nav-link js-scroll-trigger">SIGN OUT</button>
+                <button type="submit" class="btn btn-link nav-link js-scroll-trigger card">SIGN OUT</button>
             </li>
 
 
             @if (UserRoles.Contains("SuperAdmin", StringComparer.OrdinalIgnoreCase))
             {
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" asp-area="" data-bs-toggle="dropdown">Roles</a>
-                <ul class="dropdown-menu m-0 p-0">
-                    <li class="nav-item"> <a class="dropdown-item" asp-area="" asp-controller="RoleManager" asp-action="Index">Roles List</a></li>
-                    <li class="nav-item"> <a class="dropdown-item" asp-area="" asp-controller="UserRoles" asp-action="Index">User Roles</a></li>
-                </ul>
-            </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" asp-area="" data-bs-toggle="dropdown">Roles</a>
+                    <ul class="dropdown-menu m-0 p-0">
+                        <li class="nav-item"> <a class="dropdown-item card" asp-area="" asp-controller="RoleManager" asp-action="Index">Roles List</a></li>
+                        <li class="nav-item"> <a class="dropdown-item card" asp-area="" asp-controller="UserRoles" asp-action="Index">User Roles</a></li>
+                    </ul>
+                </li>
             }
         </ul>
     </form>
@@ -43,10 +43,11 @@
 else
 {
     <ul class="navbar-nav text-uppercase ml-auto">
-        <li class="nav-item"> <a class="nav-link js-scroll-trigger" id="register" asp-area="Identity" asp-page="/Account/Register">Sign up</a> </li>
-        <li class="nav-item"> <a class="nav-link js-scroll-trigger" id="login" asp-area="Identity" asp-page="/Account/Login">Sign in</a></li>
-        <li class="nav-item"><a class="nav-link js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-        <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+        <li class="nav-item"> <a class="nav-link js-scroll-trigger card" id="register" asp-area="Identity" asp-page="/Account/Register">Sign up</a> </li>
+        <li class="nav-item"> <a class="nav-link js-scroll-trigger card" id="login" asp-area="Identity" asp-page="/Account/Login">Sign in</a></li>
+        <li class="nav-item"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+        <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+        <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger card" data-toggle="modal" data-target="#demoLogin">Demo Login</a></li>
     </ul>
 }
 

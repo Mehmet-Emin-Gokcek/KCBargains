@@ -9,7 +9,6 @@ namespace KCBargains.Enums
     {
         SuperAdmin,
         Admin,
-        Moderator,
-        Basic
+        Basic,
     }
 }

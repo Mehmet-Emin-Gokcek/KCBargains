@@ -28,7 +28,9 @@ namespace KCBargains
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     await ContextSeed.SeedRolesAsync(userManager, roleManager);
-                    await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
+                    await ContextSeed.SeedSuperAdminAsync(userManager, roleManager); //Create Super Admin account using the information at Data\ContextSeed.cs
+                    await ContextSeed.SeedAdminAsync(userManager, roleManager);//Create Admin account using the information at Data\ContextSeed.cs
+                    await ContextSeed.SeedUserAsync(userManager, roleManager);//Create User account using the information at Data\ContextSeed.cs
                 }
                 catch (Exception ex)
                 {

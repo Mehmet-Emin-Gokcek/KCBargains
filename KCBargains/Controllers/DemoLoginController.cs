@@ -30,17 +30,18 @@ namespace KCBargains.Controllers
 
 
     [HttpPost]
-    public async Task<IActionResult> LoginUser(string userRole) //userRole passes user.Name, which will be used to login the user
+    public async Task<IActionResult> LoginUser(string userName) //userRole passes user.Name, which will be used to login the user
         {
-           string returnUrl = Url.Content("~/") + "home";
-            if (!String.IsNullOrEmpty(userRole))
+            string returnUrl = Url.Content("~/") + "home";
+
+            if (!String.IsNullOrEmpty(userName))
             {
                     // Clear the existing external cookie to ensure a clean login process
                     await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
                     string userPassword = "123Pa$$word."; //All demo users are assigned the same password
 
-                    var result = await _signInManager.PasswordSignInAsync(userRole, userPassword, true, lockoutOnFailure: false);
+                    var result = await _signInManager.PasswordSignInAsync(userName, userPassword, true, lockoutOnFailure: false);
 
                     if (result.Succeeded)
                     {
@@ -50,6 +51,7 @@ namespace KCBargains.Controllers
             }
             
             _logger.LogInformation("Error!!! DemoLoginController/LoginUser(): could not sign in the user. Submitted user role value is either null or empty.");
+
             return Redirect("/Home/Index"); //this routing doesn't work that is why I had to add jquery page reload function on Home/Index.cshtml
         }
     }

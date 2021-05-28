@@ -11484,6 +11484,7 @@ img:hover {
     border-color: transparent !important;
 }
 
+
 .nav-link, .dropdown-item card,
 .nav-link js-scroll-trigger card,
 .btn btn-link nav-link js-scroll-trigger card {
@@ -11527,3 +11528,37 @@ img:hover {
 .is-hide {
     display: none;
 }
+
+/*Modal window in the home page demo login*/
+#demoLoginModal {
+    border: none;
+    height: 100%;
+    margin-top: 100px;
+    background-color: #000000d4;
+    border-radius: 1rem;
+}
+
+    #demoLoginModal:hover {
+        background-color: #000000e3;
+    }
+
+    #demoLoginModalHeader .close {
+        padding: 1rem 1rem;
+        margin: -1rem -5rem -1rem auto;
+    }
+#basicUser, #Admin, #superAdmin {
+    background-color: #138496 !important;
+}
+    #basicUser:hover, #Admin:hover, #superAdmin:hover {
+        background-color: #0e6876 !important;
+    }
+
+#demoLoginModalClose:hover {
+    transition: transform .2s;
+    transform: scale(1.5);
+}
+
+#demoLoginModalClose:focus {
+    outline: none;
+}
+

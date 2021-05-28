@@ -48,20 +48,24 @@
         <!-- Modal -->
         <div class="modal fade" id="demoLogin" tabindex="-1" role="dialog" aria-labelledby="demoLoginLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="demoLoginLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                <div class="modal-content card" id="demoLoginModal">
+                    <div class="modal-header border-0 text-white" id="demoLoginModalHeader">
+                        <div class="modal-title" id="exampleModalCenterTitle">
+                            <div class="d-flex mr-5">
+                            <button type="button" id="demoLoginModal" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button></div>
+                            <div class="d-flex justify-content-center ml-5"><h4><b>Demo Login Options</b></h4></div>
+                            <div class="d-flex justify-content-center ml-4"><a>Sign in using below demo accounts with different roles</a>
+                            </div>
+                        </div>
+                        
                     </div>
                     <div class="modal-body">
-                        <a class="btn btn-info btn-lg" onclick="demoLogin('basicuser')" data-dismiss="modal">Basic User</a>
-                        <a class="btn btn-info btn-lg" onclick="demoLogin('admin')" data-dismiss="modal">Admin</a>
-                        <a class="btn btn-info btn-lg" onclick="demoLogin('superadmin')" data-dismiss="modal">Super Admin</a>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary">Close</button>
+
+                        <div class="row p-2 mr-5 ml-5 mb-3"><button class="btn btn-info btn-lg btn-block text-center"  id="basicUser" onclick="demoLogin('standarduser')" data-dismiss="modal"><i class="far fa-user"></i> Standard User</button></div>                        
+                        <div class="row p-2 mr-5 ml-5 mb-3"><button class="btn btn-info btn-lg btn-block text-center"  id="Admin" onclick="demoLogin('admin')" data-dismiss="modal"><i class="far fa-user"></i> Admin</button></div>
+                        <div class="row p-2 mr-5 ml-5 mb-3"> <button class="btn btn-info btn-lg btn-block text-center" id="superAdmin" onclick="demoLogin('superadmin')" data-dismiss="modal"><i class="far fa-user"></i> Super Admin</button></div>
                     </div>
                 </div>
             </div>
@@ -84,8 +88,8 @@
 @section Scripts {
     <script type="text/javascript">
         //Make ajax post request to DemoLoginController by submitting admin/superadmin/basic user names
-        function demoLogin(role) {
-            $.post("/DemoLogin/LoginUser", { userRole: role })
+        function demoLogin(userName) {
+            $.post("/DemoLogin/LoginUser", { userName: userName })
                 .done(function (data) {
                     $("#overlay").fadeOut(1000); //overlay fadeout
 

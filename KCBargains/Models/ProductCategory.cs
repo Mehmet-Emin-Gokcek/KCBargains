@@ -12,11 +12,14 @@ namespace KCBargains.Models
         public string Name { get; set; }
 
         public List<Product> products { get; set; }
+        public string AdminId { get; set; }
+        public ApplicationUser Admin { get; set; }
+        public string TimeLog { get; set; }
 
-        public ProductCategory() { }
-
-        public ProductCategory(string name) {
+        public ProductCategory(string name, string adminId) {
             Name = name;
+            AdminId = adminId;
+            TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
         }
 
 

@@ -13,14 +13,14 @@ namespace KCBargains.Models
         public string LastName { get; set; }
         public int UsernameChangeLimit { get; set; } = 10;
         public byte[] ProfilePicture { get; set; }
+        public string AdminId{ get; set; }
+        public ApplicationUser Admin { get; set; }
+        public string TimeLog { get; set; }
 
-        //prevents Model Builder from creating duplicate asp.net users table in the database
-        public static explicit operator ApplicationUser(Task<ApplicationUser> v)
-        {
-            throw new NotImplementedException();
+        public ApplicationUser() {
+
+            TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
         }
-       
-       
-        
+
     }
 }

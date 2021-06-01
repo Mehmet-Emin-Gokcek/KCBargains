@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using KCBargains.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using KCBargains.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SendGrid;
 using SendGrid.Helpers.Mail;
 
 namespace KCBargains.Areas.Identity.Pages.Account
@@ -144,10 +135,12 @@ namespace KCBargains.Areas.Identity.Pages.Account
 
                     if (UserLoginResult.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, Roles.Standard.ToString()); //Assign basic role to the user
+
                         //Sign in the new user
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
 
-                        return LocalRedirect(returnUrl);
+                        return LocalRedirect("/home");
                     }
 
                 }

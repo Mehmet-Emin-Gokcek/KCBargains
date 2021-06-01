@@ -14,7 +14,7 @@ namespace KCBargains.Data
             //Seed Roles
             await roleManager.CreateAsync(new IdentityRole(Roles.SuperAdmin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.Basic.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Standard.ToString()));
         }
         public static async Task SeedSuperAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -37,7 +37,7 @@ namespace KCBargains.Data
                 if (user == null)
                 {
                     await userManager.CreateAsync(superAdmin, "123Pa$$word.");
-                    await userManager.AddToRoleAsync(superAdmin, Roles.Basic.ToString());
+                    await userManager.AddToRoleAsync(superAdmin, Roles.Standard.ToString());
                     await userManager.AddToRoleAsync(superAdmin, Roles.Admin.ToString());
                     await userManager.AddToRoleAsync(superAdmin, Roles.SuperAdmin.ToString());
                 }
@@ -67,7 +67,7 @@ namespace KCBargains.Data
                 if (user == null)
                 {
                     await userManager.CreateAsync(adminUser, "123Pa$$word.");
-                    await userManager.AddToRoleAsync(adminUser, Roles.Basic.ToString());
+                    await userManager.AddToRoleAsync(adminUser, Roles.Standard.ToString());
                     await userManager.AddToRoleAsync(adminUser, Roles.Admin.ToString());
                 }
             }
@@ -96,7 +96,7 @@ namespace KCBargains.Data
                 if (user == null)
                 {
                     await userManager.CreateAsync(standardUser, "123Pa$$word.");
-                    await userManager.AddToRoleAsync(standardUser, Roles.Basic.ToString());
+                    await userManager.AddToRoleAsync(standardUser, Roles.Standard.ToString());
                 }
 
             }

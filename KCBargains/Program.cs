@@ -17,7 +17,10 @@ namespace KCBargains
     {
         public async static Task Main(string[] args)
         {
+
+            //Create roles data and seed user information into the database
             var host = CreateHostBuilder(args).Build();
+
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

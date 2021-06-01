@@ -33,9 +33,11 @@ namespace KCBargains.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+           // await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
             if (returnUrl != null)
             {
-                return LocalRedirect(returnUrl);
+                return LocalRedirect("~/");
             }
             else
             {

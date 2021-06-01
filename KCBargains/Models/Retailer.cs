@@ -29,19 +29,13 @@ namespace KCBargains.Models
         public string Zipcode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-
-        public Retailer(string name, string street, string city, string state, string zipcode, double latitude, double longitude ) {
-
-            Name = name;
-            Street = street;
-            City = city;
-            State = state;
-            Zipcode = zipcode;
-            Latitude = latitude;
-            Longitude = longitude;
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+        public string TimeLog { get; set; }
+        public List<Product> Products { get; set; }
+        public Retailer( ) {
+         TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
         }
-
-        public Retailer() { }
 
     }
 }

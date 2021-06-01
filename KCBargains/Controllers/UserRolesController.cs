@@ -96,6 +96,30 @@ namespace KCBargains.Controllers
             }
             return RedirectToAction("Index");
         }
+
+
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> Add()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+           
+            return View(roles);
+        }
+
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> Add(string roleName)
+        {
+            if (roleName != null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
+            }
+
+            return RedirectToAction("Add");
+        }
+
+
         private async Task<List<string>> GetUserRoles(ApplicationUser user)
         {
             return new List<string>(await _userManager.GetRolesAsync(user));

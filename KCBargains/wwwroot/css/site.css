@@ -11419,7 +11419,7 @@ img:hover {
     background: #06A10B;
 }
 
-#updateCategory span {
+#saveCategory span {
     background: #2C43B8;
 }
 
@@ -11546,19 +11546,37 @@ img:hover {
         padding: 1rem 1rem;
         margin: -1rem -5rem -1rem auto;
     }
-#basicUser, #Admin, #superAdmin {
-    background-color: #138496 !important;
+
+#basicUser {
+    background-color: #007bff !important;
 }
-    #basicUser:hover, #Admin:hover, #superAdmin:hover {
-        background-color: #0e6876 !important;
+#admin {
+    background-color: #ffc107 !important;
+}
+ 
+
+#editProductButton, #demoLoginModalClose, #basicUser, #admin, #superAdmin {
+    transition: 0.2s ease-in-out;
+}
+
+    #editProductButton:hover, #demoLoginModalClose:hover, #basicUser:hover, #admin:hover, #superAdmin:hover {
+        filter: brightness(0.9) !important; /* 10% brightness */
+        transform: scale(1.05);
+        transition: 0.2s ease-in-out;
     }
 
-#demoLoginModalClose:hover {
-    transition: transform .2s;
-    transform: scale(1.5);
-}
+    #demoLoginModalClose:focus {
+        outline: none;
+    }
 
-#demoLoginModalClose:focus {
-    outline: none;
+.zoom-out-in, .btn {
+    transition: 0.2s ease-in-out;
 }
+.zoom-out-in:hover, .btn:hover {
+        transform: scale(1.05);
+        transition: 0.2s ease-in-out;
+    }
 
+.table th, .table td {
+    border-top: none;
+}

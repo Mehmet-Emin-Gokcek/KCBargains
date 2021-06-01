@@ -84,8 +84,6 @@ namespace KCBargains.Areas.Identity.Pages.Account
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
-                Console.WriteLine("Login Result: " + result.ToString());
-
                 var user = await _userManager.FindByNameAsync(Input.UserName);
                
 

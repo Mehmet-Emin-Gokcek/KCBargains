@@ -33,7 +33,6 @@ namespace KCBargains.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-
             List<Product> products = context.Products.Include(e => e.Category).Include(e => e.Retailer).ToList();
             return View(products);
         }
@@ -51,6 +50,7 @@ namespace KCBargains.Controllers
             return View(product);
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin, Standard")]
         public IActionResult Add()
         {
             List<ProductCategory> categories = context.ProductCategories.ToList();
@@ -62,6 +62,8 @@ namespace KCBargains.Controllers
             return View(productViewModel);
         }
 
+
+        [Authorize(Roles = "SuperAdmin, Admin, Standard")]
         [HttpPost]
         public IActionResult Add(ProductViewModel productViewModel)
         {
@@ -69,41 +71,54 @@ namespace KCBargains.Controllers
             {
                 //Find the product category from database
                 ProductCategory category = context.ProductCategories.Find(productViewModel.CategoryId);
+                
+                //Find the user who is creating the Product object 
+                ApplicationUser user = context.Users.Find(productViewModel.UserId);
 
-                Retailer retailer = new Retailer
+                //Check to see if newly entered Retailer already exists in the database
+                //If it does, assign it to the newly entered Product
+                //This helps avoid duplicate entries for Retail locations and decreasing data redundancy in the database
+                Retailer retailer = null;
+                retailer = context.Retailers
+                    .Where(r => r.Latitude == productViewModel.Retailer.Latitude)
+                    .Where(r => r.Longitude== productViewModel.Retailer.Longitude).FirstOrDefault();
+
+                
+                if (retailer == null)
                 {
-                    Name = productViewModel.Retailer.Name,
-                    Street = productViewModel.Retailer.Street,
-                    City = productViewModel.Retailer.City,
-                    State = productViewModel.Retailer.State,
-                    Zipcode = productViewModel.Retailer.Zipcode,
-                    Latitude = productViewModel.Retailer.Latitude,
-                    Longitude = productViewModel.Retailer.Longitude
-                };
-
+                    retailer = new Retailer()
+                    {
+                        Name = CapitalizeFirstLetter(productViewModel.Retailer.Name),
+                        Street = productViewModel.Retailer.Street,
+                        City = productViewModel.Retailer.City,
+                        State = productViewModel.Retailer.State,
+                        Zipcode = productViewModel.Retailer.Zipcode,
+                        Latitude = productViewModel.Retailer.Latitude,
+                        Longitude = productViewModel.Retailer.Longitude,
+                        User = user,
+                    };
+                    context.Retailers.Add(retailer);
+                }
 
                 string[] pictureList = UploadPicture(productViewModel);//returns list of uploaded pictures
 
-
-                //Find signed in user from database
-                ApplicationUser SignedUser = context.Users.Find(productViewModel.UserId);
-
-                Product product = new Product
+              
+                Product product = new Product()
                 {
-                    Name = productViewModel.Name,
-                    Description = productViewModel.Description,
+                    Name = CapitalizeFirstLetter(productViewModel.Name),
+                    Description = CapitalizeFirstLetter(productViewModel.Description),
                     Quantity = productViewModel.Quantity,
                     Cost = productViewModel.Cost,
-                    User = SignedUser,
                     Category = category,
                     Retailer = retailer,
                     Picture1 = pictureList[0],
                     Picture2 = pictureList[1],
                     Picture3 = pictureList[2],
                     Picture4 = pictureList[3],
+                    User = user,
                 };
 
-                context.Retailers.Add(retailer);
+
                 context.Products.Add(product);
                 context.SaveChanges();
 
@@ -117,6 +132,8 @@ namespace KCBargains.Controllers
             return View(new ProductViewModel(categories, new Retailer())); 
         }
 
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public IActionResult Edit(int Id)
         {
             // Pull the Product object that will be edited from the database
@@ -147,6 +164,7 @@ namespace KCBargains.Controllers
         }
 
 
+        [Authorize(Roles = "SuperAdmin, Admin, Standard")]
         [HttpPost]
         public IActionResult Edit(ProductViewModel productViewModel)
         {
@@ -162,7 +180,7 @@ namespace KCBargains.Controllers
                 Product product = context.Products.Find(productViewModel.ProductId);
 
                 //Update the Retailer Object
-                retailer.Name = productViewModel.Retailer.Name;
+                retailer.Name = CapitalizeFirstLetter(productViewModel.Retailer.Name);
                 retailer.Street = productViewModel.Retailer.Street;
                 retailer.City = productViewModel.Retailer.City;
                 retailer.State = productViewModel.Retailer.State;
@@ -193,8 +211,8 @@ namespace KCBargains.Controllers
                 }
 
                 //Update the Product Object
-                product.Name = productViewModel.Name;
-                product.Description = productViewModel.Description;
+                product.Name = CapitalizeFirstLetter(productViewModel.Name);
+                product.Description = CapitalizeFirstLetter(productViewModel.Description);
                 product.Quantity = productViewModel.Quantity;
                 product.Cost = productViewModel.Cost;
                 product.Picture1 = productViewModel.Picture1;
@@ -222,8 +240,37 @@ namespace KCBargains.Controllers
             return View(productViewModel); 
         }
 
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public IActionResult List()
+        {
+            List<Product> products = context.Products.Include(e => e.Category).Include(e => e.Retailer).ToList();
+            return View(products);
+        }
+
+
+        [Authorize(Roles = "SuperAdmin")]
+        public IActionResult Delete(int Id)
+        {
+            // Pull the Product object that will be deleted from the database
+            Product product = context.Products.Include(p => p.Category).Single(p => p.Id == Id);
+
+            // Nullify relationship with Category table to avoid cascading delete behavior
+            //otherwise deleting product might delete related object information at other tables
+            product.Category = null;
+            product.Retailer = null;
+            product.User = null;
+            
+            context.Products.Remove(product);
+            context.SaveChanges();
+
+            return RedirectToAction("List");
+        }
+
+
+
         //Uploading, Resizing and Saving Product Pictures
-        public string[] UploadPicture(ProductViewModel model)
+        private string[] UploadPicture(ProductViewModel model)
         {
             IFormFile[] fileArr = new IFormFile[4];//store all files in an array
             fileArr[0] = model.ProductPicture1;
@@ -275,6 +322,9 @@ namespace KCBargains.Controllers
             return imageArr;
         }
 
+        private string CapitalizeFirstLetter(string str) { 
+        return (char.ToUpper(str[0]) + str.Substring(1).ToLower());
+        }
 
     }
 }

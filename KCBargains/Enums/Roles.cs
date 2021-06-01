@@ -9,6 +9,6 @@ namespace KCBargains.Enums
     {
         SuperAdmin,
         Admin,
-        Basic,
+        Standard,
     }
 }

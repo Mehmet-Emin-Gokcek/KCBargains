@@ -31,25 +31,12 @@ namespace KCBargains.Models
         public ProductCategory Category { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
+        public string TimeLog { get; set; }
 
-        public Product(){}
-
-        public Product(string name, string description, string quantity, double cost) 
+        public Product() 
         {
-            Name = name;
-            Description = description;
-            Quantity = quantity;
-            Cost = cost;
+            TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
         }
 
-        public static explicit operator Product(List<Product> v)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static implicit operator List<object>(Product v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

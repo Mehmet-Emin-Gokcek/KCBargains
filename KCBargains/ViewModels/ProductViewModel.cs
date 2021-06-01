@@ -31,19 +31,16 @@ namespace KCBargains.ViewModels
         public IFormFile ProductPicture3 { get; set; }
         public IFormFile ProductPicture4 { get; set; }
 
-
         [Required(ErrorMessage = "Category is required")]
         public int? CategoryId { get; set; }
         public int RetailerId { get; set; }
-
-        //This property will be used for Product editting
-/*        [Required(ErrorMessage = "Signed-in user id could not be found! Contact system administrator!")]*/
-        public string UserId { get; set; }
         public int ProductId { get; set; }
         public string Picture1 { get; set; }
         public string Picture2 { get; set; }
         public string Picture3 { get; set; }
         public string Picture4 { get; set; }
+        public string UserId { get; set; }
+        public string TimeLog { get; set; }
         public Retailer Retailer { get; set; }
         public ProductCategory Category { get; set; }
         public List<SelectListItem> Categories { get; set; }

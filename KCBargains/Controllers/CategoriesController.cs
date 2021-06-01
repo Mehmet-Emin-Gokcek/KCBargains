@@ -12,6 +12,8 @@ using System.Linq;
 
 namespace KCBargains.Controllers
 {
+
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class CategoriesController: Controller
     {
         private readonly BargainsDbContext context;
@@ -26,18 +28,17 @@ namespace KCBargains.Controllers
         }
 
         //Return empty view, get and post requests will be handled by AJAX on the 'Category.cshtml' view file 
-        [AllowAnonymous]
         public IActionResult Index()
         {
 
             return View();
         }
 
-       
+
         public ContentResult UpdateCategory(string id, string name)
         {
             int ID = 0;
-            string response = $"DeleteCategory() Error!!!  Product Id: {id}, Product Name: {name} input is either null or empty!";
+            string response = $"UpdateCategory() Error!!!  Product Id: {id}, Product Name: {name} input is either null or empty!";
 
             if (!String.IsNullOrEmpty(id) && !String.IsNullOrEmpty(name))
             {
@@ -54,22 +55,24 @@ namespace KCBargains.Controllers
                         category.Name = name;
                         context.ProductCategories.Update(category);
                         context.SaveChanges();
-                        response = ID.ToString();
+                        response = ID.ToString();//Successful response
                     }
 
                     else
                     {
-                        response = ($"DeleteCategory() Error!!! Product Id: '{ID}' could not be found in the database!");
+                        response = ($"UpdateCategory() Error!!! Product Id: '{ID}' could not be found in the database!");
                     }
                 }
                 catch (FormatException)
                 {
-                    response = ($"DeleteCategory() Error!!! Product Id: '{id}' could not be parsed!");
+                    response = ($"UpdateCategory() Error!!! Product Id: '{id}' could not be parsed!");
                 }
             }
             return Content(response);
         }
 
+
+        [Authorize(Roles = "SuperAdmin")]
         public ContentResult DeleteCategory(string id)
         {
             int ID = 0;
@@ -93,6 +96,7 @@ namespace KCBargains.Controllers
                         {
                             product.Category = null;
                         }
+                        category.Admin = null;
                         context.ProductCategories.Remove(category);
                         context.SaveChanges();
                         response = ID.ToString();
@@ -111,17 +115,16 @@ namespace KCBargains.Controllers
             return Content(response);
         }
 
-
         [HttpPost]
-        public ContentResult AddCategory(string name)
+        public ContentResult CreateCategory(string name, string userId)
         {
             string response = $"AddCategory() Error!!! Name: {name} Input is either null or empty!";
 
-            if (!String.IsNullOrEmpty(name))
+            if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(userId))
             {
                 if (!context.ProductCategories.Any(c => c.Name == name))
                 {
-                    ProductCategory category = new ProductCategory(name);
+                    ProductCategory category = new ProductCategory(name, userId);
                     context.ProductCategories.Add(category);
                     context.SaveChanges();
                     response = name;
@@ -136,30 +139,34 @@ namespace KCBargains.Controllers
 
         public ContentResult GetCategory()
         {
-
             string json = "";
 
-            List<ProductCategory> categories = context.ProductCategories.ToList(); //get all ProductCategories
-            List<Product> productList = context.Products.Include(e => e.Category).ToList(); //get all Products and its related categories
-            List<CategoryViewModel> updatedCategories = new List<CategoryViewModel>();
+            List<ProductCategory> categories = context.ProductCategories.Include(c => c.products).Include(c => c.Admin).ToList(); //get all ProductCategories
+
+            //categories array include too many fields that we are not interested in.
+            //Viewmodel helps avoid sending too much redundant data to the view by only including fields that we need in the view.
+            List<CategoryViewModel> categoriesView = new List<CategoryViewModel>(); 
 
             if (categories.Count != 0)
             {
-                foreach (var category in categories)
-                { //iterate through categories
-                    CategoryViewModel newCategory = new CategoryViewModel(category.Id, category.Name);
+                foreach (var category in categories)//iterate through categories
+                { 
+                    //Only assign fields that are needed in the view 
+                    CategoryViewModel newCategory = new CategoryViewModel(category.Id, category.Name, category.Admin.Email, category.TimeLog);
 
-                    foreach (var product in productList)
-                    { //We are trying to find the multiple products that relate to one ProductCategory
-
-                        if (category.Id == product.CategoryId) //If found a matching category, add it to the tempArray
-                        {
-                            newCategory.ProductNames.Add(product.Name);
-                        }
+                    //Iterate through multiple products that relate to one ProductCategory
+                    foreach (var product in category.products)
+                    { 
+                        //Only product names are needed for the view
+                        newCategory.ProductNames.Add(product.Name);
                     }
-                    updatedCategories.Add(newCategory);
+
+                    categoriesView.Add(newCategory);
                 }
-                json = JsonConvert.SerializeObject(updatedCategories);
+
+                json = JsonConvert.SerializeObject(categoriesView);
+
+                Console.WriteLine("json: " + json);
             }
             return Content(json);
         }

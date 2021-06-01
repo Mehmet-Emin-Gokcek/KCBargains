@@ -1,7 +1,25 @@
 ﻿@model Product
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
+@{
+    bool isSuperAdmin = false; //Product edit button will only show up if 'isSuperAdmin = true'
+    bool isAdmin = false; //Product edit button will only show up if 'isAdmin = true'
 
-@*-------Roles: This page will be seen by public----------*@
+    if (SignInManager.IsSignedIn(User))
+    {
+        var UserName = UserManager.GetUserName(User);
+        var user = await UserManager.FindByNameAsync(UserName);
+        var UserRoles = UserManager.GetRolesAsync(user).Result; //returns a list of user roles
+
+        //check to see if the current logged in user is super admin, only super admin should be able to see delete buttons
+        // JavaScript needs boolean True and False to be lowered case string values (true and false) to be able to do boolean check
+        // or "Uncaught reference error:True is not defined" error is thrown in the browser console
+        isSuperAdmin = UserRoles.Contains("SuperAdmin", StringComparer.OrdinalIgnoreCase);
+        isAdmin = UserRoles.Contains("Admin", StringComparer.OrdinalIgnoreCase);
+    }
+}
 
 
 <div class="container w-75 p-3">
@@ -11,9 +29,6 @@
                 <h2 class="section-heading text-uppercase">Product Details</h2>
                 <h3 class="section-subheading text-muted mb-2">Find more information on this product here.</h3>
             </div>
-
-            @*-------Edit Product Button Hidden, will be triggered with any button click in the webform----------*@
-            <a id="editProduct" class="btn btn-info text-uppercase btn-block" asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id" hidden>Edit Product</a>
 
             @*-------Product Picture and Info----------*@
             <div class="row align-items-center">
@@ -91,50 +106,48 @@
                             </a>
                         }
                     </div>
-
-                    @*-------Edit Picture Button----------*@
-                    <div class="container">
-                        <div class="text-center" id="imagebutton">
-                            <button class="btn btn-outline-dark" onclick="myFunction()">
-                                <span>
-                                    Edit
-                                    <i class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Picture"></i>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
 
                 @*-------Product Info----------*@
-                <div class="col">
-                    <table class="table table-hover bg-light w-75 m-auto">
-                        <tr>
-                            <th class="align-middle">Name</th>
-                            <td class="align-middle">@Model.Name </td>
-                        </tr>
+            <div class="col">
+                <table class="table table-hover bg-light w-75 m-auto">
 
-                        <tr>
-                            <th class="align-middle">Description</th>
-                            <td class="align-middle">@Model.Description </td>
-                        </tr>
+                    @if (isSuperAdmin || isAdmin)
+                    {<tr style="background-color:transparent !important">
+                    <td colspan="2"class="align-middle"> 
+                        @*-------Edit Product Button Hidden, will be triggered with any button click in the webform----------*@
+                        <button id="editProductButton" class="btn btn-info text-uppercase btn-block" asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id">Edit Product</button>
+                    </td>
+                      </tr>
+                     }
 
-                        <tr>
-                            <th class="align-middle">Quantity</th>
-                            <td class="align-middle"> @Model.Quantity</td>
-                        </tr>
+                    <tr>
+                        <th class="align-middle">Name</th>
+                        <td class="align-middle">@Model.Name </td>
+                    </tr>
 
-                        <tr>
-                            <th class="align-middle">Price</th>
-                            <td class="align-middle"> @Model.Cost</td>
-                        </tr>
+                    <tr>
+                        <th class="align-middle">Description</th>
+                        <td class="align-middle">@Model.Description </td>
+                    </tr>
 
-                        <tr>
-                            <th class="align-middle">Category</th>
-                            <td class="align-middle"> @Model.Category.Name</td>
-                        </tr>
-                    </table>
-                </div>
+                    <tr>
+                        <th class="align-middle">Quantity</th>
+                        <td class="align-middle"> @Model.Quantity</td>
+                    </tr>
+
+                    <tr>
+                        <th class="align-middle">Price</th>
+                        <td class="align-middle"> @Model.Cost</td>
+                    </tr>
+
+                    <tr>
+                        <th class="align-middle">Category</th>
+                        <td class="align-middle"> @Model.Category.Name</td>
+                    </tr>
+                </table>
+            </div>
             </div>
 
             @*-------Retailer Info Button----------*@
@@ -223,17 +236,7 @@
         });
     }
 
-
-    //any button click in the webpage will trigger "edit product" button.
-    function myFunction() {
-       var button = document.getElementById('editProduct');
-       button.click();
-    }
-
-    //Initialize tooltip with jQuery
-     $(document).ready(function () {
-       $('.tooltips').tooltip();
-     });
+  
     </script>
 }
 

@@ -1,6 +1,7 @@
 ﻿using KCBargains.Data;
 using KCBargains.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace KCBargains.Controllers
 {
+    [AllowAnonymous]
     public class DemoLoginController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -28,7 +30,7 @@ namespace KCBargains.Controllers
             _logger = logger;
         }
 
-
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> LoginUser(string userName) //userRole passes user.Name, which will be used to login the user
         {
@@ -41,7 +43,7 @@ namespace KCBargains.Controllers
 
                     string userPassword = "123Pa$$word."; //All demo users are assigned the same password
 
-                    var result = await _signInManager.PasswordSignInAsync(userName, userPassword, true, lockoutOnFailure: false);
+                    var result = await _signInManager.PasswordSignInAsync(userName, userPassword, false, lockoutOnFailure: false);
 
                     if (result.Succeeded)
                     {

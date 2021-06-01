@@ -25,18 +25,25 @@ namespace KCBargains
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BargainsDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("AzureDbConnection")));
+
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+              .AddEntityFrameworkStores<BargainsDbContext>()
+              .AddDefaultUI()
+              .AddDefaultTokenProviders();
 
             services.AddControllersWithViews().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });            
-            
-            // services.AddDbContext<EventDbContext>(options =>
-            // options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddRazorPages();
 
             services.Configure<IdentityOptions>(options =>
@@ -74,24 +81,17 @@ namespace KCBargains
 
             });
 
-            //Google reCaptcha Service
-           // services.AddTransient<CaptchaVerificationService>();
-            //services.Configure<CaptchaSettings>(Configuration);
 
-
-
-       /*     services.ConfigureApplicationCookie(options =>
+            services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
-                options.Cookie.Name = GlobalConstants.AuthCookieName;
-            });*/
-
-
+            });
 
         }
 
@@ -123,6 +123,8 @@ namespace KCBargains
                     endpoints.MapRazorPages();
 
             });
+  
+
         }
     }
 }

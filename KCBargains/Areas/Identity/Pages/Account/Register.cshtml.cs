@@ -1,4 +1,4 @@
-﻿
+﻿using KCBargains.Enums;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -129,8 +129,11 @@ namespace KCBargains.Areas.Identity.Pages.Account
 
 
              var result = await _userManager.CreateAsync(user, Input.Password);
+                
+
                 if (result.Succeeded)
                 {
+                     await _userManager.AddToRoleAsync(user, Roles.Standard.ToString()); //Assign basic role to the user
                     _logger.LogInformation("{Name} User created a new account with password.", user.FirstName);
                     
 

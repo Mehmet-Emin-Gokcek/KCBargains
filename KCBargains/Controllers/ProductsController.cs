@@ -38,15 +38,9 @@ namespace KCBargains.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Detail(int id)
+        public IActionResult Detail(int Id)
         {
-            //Check to see if there is any Product Id data being passed from Edit Post Action
-            if (TempData.Peek("ProductID") != null)
-            {
-                id = (int)TempData["ProductID"];
-            }
-
-            Product product = context.Products.Include(e => e.Category).Include(e => e.Retailer).Single(e => e.Id == id);
+            Product product = context.Products.Include(e => e.Category).Include(e => e.Retailer).Single(e => e.Id == Id);
             return View(product);
         }
 
@@ -136,6 +130,14 @@ namespace KCBargains.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public IActionResult Edit(int Id)
         {
+
+            //Check to see if there is any Product Id data being passed from Edit Post Action
+            if (TempData.Peek("ProductID") != null)
+            {
+                Id = (int)TempData["ProductID"];
+            }
+
+
             // Pull the Product object that will be edited from the database
             Product theProduct = context.Products.Find(Id);
             Retailer theRetailer = context.Retailers.Find(theProduct.RetailerId);
@@ -158,7 +160,9 @@ namespace KCBargains.Controllers
                 Category = theCategory,
                 CategoryId = theCategory.Id,
                 RetailerId = theRetailer.Id,
-                ProductId = Id
+                ProductId = Id,
+                UserId = theProduct.UserId,
+                TimeLog = theProduct.TimeLog
             };
             return View(productViewModel);
         }
@@ -229,7 +233,7 @@ namespace KCBargains.Controllers
                 context.SaveChanges();
 
                 TempData.Add("ProductID", productViewModel.ProductId); //Pass Product ID data to Detail View
-                return RedirectToAction("Detail");
+                return RedirectToAction("Edit");
             }
 
             //reload category list options to make sure they will appear after the data validation errors

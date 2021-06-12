@@ -16,7 +16,7 @@
         {
             @*-------Header Text---------*@
             <div class="text-center">
-                <h2 class="section-heading text-uppercase">All Retailers</h2>
+                <h2 class="section-heading text-uppercase">All Retailers - Admin View</h2>
             </div>
 
             @*-------Products Information---------*@
@@ -25,46 +25,47 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle"></th>
                             <th scope="col" class="align-middle">Id</th>
                             <th scope="col" class="align-middle">Name</th>
                             <th scope="col" class="align-middle">Street</th>
                             <th scope="col" class="align-middle">City</th>
                             <th scope="col" class="align-middle">State</th>
                             <th scope="col" class="align-middle">Zipcode</th>
-                            <th scope="col" class="align-middle">Latitude</th>
-                            <th scope="col" class="align-middle">Longitude</th>
                             <th scope="col" class="align-middle">Products</th>
-                            <th scope="col" class="align-middle">Created by</th>
                             <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Created at</th>
                             <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var product in Model)
+                        @foreach (var retailer in Model)
                         {
-                        <tr>
-                            
-                            <th scope="row"><a class="btn btn-outline-info" asp-controller="Products" asp-action="Detail" asp-route-id="@product.Id"><i class="fas fa-search fa-2x"></i></a></th>
-                            <th class="align-middle">">@product.Id</th>
-                            <td class="align-middle">@product.Name</td>
-                            <td class="align-middle">@product.Street</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.City</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.State</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.Zipcode</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.Latitude</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.Longitude</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.Products</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.TimeLog</td>
-                            <td class="align-middle text-center" style="white-space: nowrap;">@product.UserId</td>
-                            <td class="align-middle text-center" style="display: flex; white-space: nowrap;">
-                                @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin"))
+                            var productNames = "";
+
+                            @if (retailer.Products.Count != 0)
+                            {
+                                foreach (var product in retailer.Products)
                                 {
-                                    <a class="categoryButton mr-1 mt-2" id="deleteCategory" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id"> <span> <i class="fas fa-trash-alt"></i> </span> </a>
+                                    productNames = product.Name + " ";
                                 }
-                                <a class="categoryButton mt-2" id="editCategory" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id"> <span> <i class="far fa-edit"></i> </span> </a>
-                            </td>
-                        </tr>
+
+                            }
+                            <tr>
+                                <th class="align-middle">@retailer.Id</th>
+                                <td class="align-middle">@retailer.Name</td>
+                                <td class="align-middle">@retailer.Street</td>
+                                <td class="align-middle text-center" style="white-space: nowrap;">@retailer.City</td>
+                                <td class="align-middle text-center" style="white-space: nowrap;">@retailer.State</td>
+                                <td class="align-middle text-center" style="white-space: nowrap;">@retailer.Zipcode</td>
+                                <td class="align-middle text-center" style="white-space: nowrap;">@productNames</td>
+                                <td class="align-middle text-center" style="white-space: nowrap;">@retailer.TimeLog</td>
+                                <td class="align-middle text-center" style="display: flex; white-space: nowrap;">
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin"))
+                                    {
+                                        <a class="categoryButton mr-1 mt-2" id="deleteCategory" asp-controller="Products" asp-action="Delete" asp-route-id="@retailer.Id"> <span> <i class="fas fa-trash-alt"></i> </span> </a>
+                                    }
+                                    <a class="categoryButton mt-2" id="editCategory" asp-controller="Products" asp-action="Edit" asp-route-id="@retailer.Id"> <span> <i class="far fa-edit"></i> </span> </a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -77,8 +78,8 @@
             <!-- Retailer Locations-->
             <div class="container pt-xl-5">
                 <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Product Map</h2>
-                    <h3 class="section-subheading text-muted mb-3">Find the locations of all deals below.</h3>
+                    <h2 class="section-heading text-uppercase">Retailer Map</h2>
+                    <h3 class="section-subheading text-muted mb-3">Find the locations of all retailes here</h3>
                 </div>
                 <div id="GoogleMaps" style="width:100%;height:400px;"></div>
             </div>

@@ -6,8 +6,8 @@
 <div class="container w-75 p-3 pb-0 mb-0">
     <section class="page-section pb-0 mb-0" id="portfolio">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">Product Details</h2>
-            <h3 class="section-subheading text-muted mb-2">Find more information on this product here.</h3>
+            <h2 class="section-heading text-uppercase">Edit a Product</h2>
+            <h3 class="section-subheading text-muted mb-2">You can edit product information here.</h3>
         </div>
 
         <form enctype="multipart/form-data" aps-controller="Products" asp-action="Edit" method="post">
@@ -116,19 +116,23 @@
 
                             @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
                             <td name="name_input" class="align-middle" style="display:none">
-                                <input class="form-control" asp-for="Name" type="text" value="@Model.Name" />
+                                <input class="form-control" style="height: 100% !important;" asp-for="Name" type="text" value="@Model.Name" />
                                 <span asp-validation-for="Name"></span>
                             </td>
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="name_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Name">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Name">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
                             <td name="name_data" class="align-middle">@Model.Name</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="name_data" class="align-middle">
-                                <input type="button" onclick="editFunction('name')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Name">
+                                <a class="categoryButton editCategory" onclick="editFunction('name')" data-toggle="tooltip" data-placement="right" title="Edit Name">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -137,19 +141,23 @@
 
                             @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
                             <td name="description_input" class="align-middle" style="display:none">
-                                <input class="form-control" asp-for="Description" type="text" value="@Model.Description" />
+                                <input class="form-control" style="height: 100% !important;" asp-for="Description" type="text" value="@Model.Description" />
                                 <span asp-validation-for="Description"></span>
                             </td>
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="description_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Name">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
                             <td name="description_data" class="align-middle">@Model.Description</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="description_data" class="align-middle">
-                                <input type="button" onclick="editFunction('description')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Description">
+                                <a class="categoryButton editCategory" onclick="editFunction('description')" data-toggle="tooltip" data-placement="right" title="Edit Description">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -158,19 +166,23 @@
 
                             @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
                             <td name="quantity_input" class="align-middle" style="display:none">
-                                <input class="form-control" asp-for="Quantity" type="text" value="@Model.Quantity" />
+                                <input class="form-control" style="height: 100% !important;" asp-for="Quantity" type="text" value="@Model.Quantity" />
                                 <span asp-validation-for="Quantity"></span>
                             </td>
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="quantity_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Quantity">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Quantity">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
                             <td name="quantity_data" class="align-middle">@Model.Quantity</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="quantity_data" class="align-middle">
-                                <input type="button" onclick="editFunction('quantity')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Quantity">
+                                <a class="categoryButton editCategory" onclick="editFunction('quantity')" data-toggle="tooltip" data-placement="right" title="Edit Quantity">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -179,19 +191,23 @@
 
                             @*table data element is hidden/unrendered, clicking edit button makes input element visible/rendered-------*@
                             <td name="cost_input" class="align-middle" style="display:none">
-                                <input class="form-control" asp-for="Cost" type="text" value="@Model.Cost" />
+                                <input class="form-control" style="height: 100% !important;" asp-for="Cost" type="text" value="@Model.Cost" />
                                 <span asp-validation-for="Cost"></span>
                             </td>
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="cost_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Cost">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Cost">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
                             <td name="cost_data" class="align-middle">@Model.Cost</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="cost_data" class="align-middle">
-                                <input type="button" onclick="editFunction('cost')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Cost">
+                                <a class="categoryButton editCategory" onclick="editFunction('cost')" data-toggle="tooltip" data-placement="right" title="Edit Cost">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -206,14 +222,18 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="category_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Category">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Category">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
 
                             <td name="category_data" class="align-middle">@Model.Category.Name</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="category_data" class="align-middle">
-                                <input type="button" onclick="editFunction('category')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Categoy">
+                                <a class="categoryButton editCategory" onclick="editFunction('category')" data-toggle="tooltip" data-placement="right" title="Edit Category">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -228,7 +248,9 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Picture">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                         @*Picture 2upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 2*@
@@ -242,7 +264,9 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Picture">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                         @*Picture 3 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 3*@
@@ -256,7 +280,9 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Picture">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                         @*Picture 4 upload is hidden/un-rendered by default, it will be rendered and become visible if the Model does not have a value for picture 4*@
@@ -270,8 +296,23 @@
                             </td>
                             @*Submit form button*@
                             <td name="category_input" class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save picture">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Picture">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
+                        </tr>
+
+                        <tr>
+                            <th class="align-middle">Product Id</th>
+                            <td>@Model.ProductId</td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">User Id</th>
+                            <td>@Model.UserId</td>
+                        </tr>
+                        <tr>
+                            <th class="align-middle">Timestamp</th>
+                            <td>@Model.TimeLog</td>
                         </tr>
 
                     </table>
@@ -314,13 +355,17 @@
 
                             @*table data element is hidden/unrendered, clicking save button submits the whole form to the controller-------*@
                             <td name="retailer_name_input" class="align-middle" style="display:none">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Description">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
 
                             <td name="retailer_name_data" class="align-middle">@Model.Retailer.Name</td>
                             @*Edit button makes save button un-hidden/rendered using editFunction*@
                             <td name="retailer_name_data" class="align-middle">
-                                <input type="button" onclick="editFunction('retailer_name')" class="fas fa-edit" data-toggle="tooltip" data-placement="right" title="Edit Retailer Name">
+                                <a class="categoryButton editCategory" onclick="editFunction('retailer_name')" data-toggle="tooltip" data-placement="right" title="Edit Retailer Name">
+                                    <span> <i class="far fa-edit"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -330,7 +375,9 @@
                                 <input class="form-control" id="autocomplete" placeholder="Enter street address. We will autofill the rest." type="text" />
                             </td>
                             <td class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Retailer">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Retailer">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -341,7 +388,9 @@
                                 <span asp-validation-for="Retailer.Street"></span>
                             </td>
                             <td class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Street">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Street">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
 
@@ -352,7 +401,9 @@
                                 <span asp-validation-for="Retailer.City"></span>
                             </td>
                             <td class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save City">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save City">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                         <tr>
@@ -362,7 +413,9 @@
                                 <span asp-validation-for="Retailer.State"></span>
                             </td>
                             <td class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save State">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save State">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                         <tr>
@@ -372,7 +425,9 @@
                                 <span asp-validation-for="Retailer.Zipcode"></span>
                             </td>
                             <td class="align-middle">
-                                <input type="button" name="save" class="fas fa-save" data-toggle="tooltip" data-placement="right" title="Save Zipcode">
+                                <a class="categoryButton editCategory" name="save" data-toggle="tooltip" data-placement="right" title="Save Zipcode">
+                                    <span> <i class="fas fa-save"></i> </span>
+                                </a>
                             </td>
                         </tr>
                     </table>

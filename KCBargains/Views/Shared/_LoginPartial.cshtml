@@ -25,6 +25,7 @@
 
     @if (SuperAdmin || Admin)
     {
+        <li class="nav-item"> <a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Retailers" asp-action="Index">Retailers</a></li>
         <li class="nav-item"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Products" asp-action="List">Products</a></li>
         <li class="nav-item"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Categories" asp-action="Index">Product Categories</a></li>
     }
@@ -55,8 +56,6 @@ else
     <ul class="navbar-nav text-uppercase ml-auto">
         <li class="nav-item"> <a class="nav-link js-scroll-trigger card" id="register" asp-area="Identity" asp-page="/Account/Register">Sign up</a> </li>
         <li class="nav-item"> <a class="nav-link js-scroll-trigger card" id="login" asp-area="Identity" asp-page="/Account/Login">Sign in</a></li>
-        <li class="nav-item"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-        <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger card" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
         <li class="nav-item mr-4"><a class="nav-link js-scroll-trigger card" data-toggle="modal" data-target="#demoLogin">Demo Login</a></li>
     </ul>
 }

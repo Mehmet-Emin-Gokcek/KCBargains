@@ -16,13 +16,18 @@ namespace KCBargains.Models
         public ApplicationUser Admin { get; set; }
         public string TimeLog { get; set; }
 
-        public ProductCategory(string name, string adminId) {
+        public ProductCategory(string name, string adminId) 
+        {
             Name = name;
             AdminId = adminId;
             TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
         }
 
 
+        public ProductCategory()
+        {
+            TimeLog = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
+        }
 
 
     }

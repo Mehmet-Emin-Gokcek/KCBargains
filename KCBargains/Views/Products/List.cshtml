@@ -6,94 +6,93 @@
 
         @if (Model.Count == 0 || Model == null) //If no deal or product is present
         {
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">No deals yet!</h2>
-                <h3 class="section-subheading text-muted mb-3">Click below button to add a deal.</h3>
-            </div>
-
-            @*-------Add a product---------*@
-            <div class="container" style="margin-bottom:10px; margin-top:10px">
-                <div class="text-center">
-                    <a class="btn btn-primary btn-xl text-uppercase" asp-controller="Products" asp-action="Add">Add a Deal</a>
-                </div>
-            </div>
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">No deals yet!</h2>
+            <h3 class="section-subheading text-muted mb-3">Click below button to add a deal.</h3>
+        </div>
         }
 
         else
         {
-            @*-------Header Text---------*@
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">All Deals</h2>
-            </div>
 
-            @*-------Products Information---------*@
+        @*-------Header Text---------*@
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">All Deals - Admin View</h2>
+        </div>
 
-            <div class="row justify-content-center">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Id</th>
-                            <th scope="col" class="align-middle">Name</th>
-                            <th scope="col" class="align-middle">Description</th>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Cost</th>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Quantity</th>
-                            <th scope="col" class="align-middle">Pic#1</th>
-                            <th scope="col" class="align-middle">Pic#2</th>
-                            <th scope="col" class="align-middle">Pic#3</th>
-                            <th scope="col" class="align-middle">Pic#4</th>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Category</th>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Retailer</th>
-                            <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var product in Model)
+        @*-------Products Information---------*@
+
+        <div class="row justify-content-center">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col" class="align-middle">Name</th>
+                        <th scope="col" class="align-middle">Description</th>
+                        <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Cost</th>
+                        <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Quantity</th>
+                        <th scope="col" class="align-middle">Pic#1</th>
+                        <th scope="col" class="align-middle">Pic#2</th>
+                        <th scope="col" class="align-middle">Pic#3</th>
+                        <th scope="col" class="align-middle">Pic#4</th>
+                        <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Category</th>
+                        <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Retailer</th>
+                        <th scope="col" class="align-middle text-center" style="white-space: nowrap;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
                         {
-                            <tr>
-                                <th scope="row"><a class="btn btn-outline-info" asp-controller="Products" asp-action="Detail" asp-route-id="@product.Id">@product.Id</a></th>
-                                <td class="align-middle" asp-controller="Products" asp-action="Detail" asp-route-id="@product.Id">@product.Name</td>
-                                <td class="align-middle">@product.Description</td>
-                                <td class="align-middle text-center" style="white-space: nowrap;">@product.Cost</td>
-                                <td class="align-middle text-center" style="white-space: nowrap;">@product.Quantity</td>
-                                <td class="align-middle">
-                                    <img class="d-block img-fluid rounded" src="~/images/@product.Picture1" alt="" asp-append-version="true">
-                                </td>
-                                <td class="align-middle">
-                                    <img class="d-block img-fluid rounded" src="~/images/@product.Picture2" alt="" asp-append-version="true">
-                                </td>
-                                <td class="align-middle">
-                                    <img class="d-block img-fluid rounded" src="~/images/@product.Picture3" alt="" asp-append-version="true">
-                                </td>
-                                <td class="align-middle">
-                                    <img class="d-block img-fluid rounded" src="~/images/@product.Picture4" alt="" asp-append-version="true">
-                                </td>
-                                <td class="align-middle text-center" style="white-space: nowrap;">@product.Category.Name</td>
-                                <td class="align-middle text-center" style="white-space: nowrap;">@product.Retailer.Name</td>
-                                <td class="align-middle text-center" style="display: flex; white-space: nowrap;">
-                                    @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin"))
-                                    {
-                                        <a class="categoryButton mr-1 mt-2" id="deleteCategory" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id"> <span> <i class="fas fa-trash-alt"></i> </span> </a>
-                                    }
-                                    <a class="categoryButton mt-2" id="editCategory" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id"> <span> <i class="far fa-edit"></i> </span> </a>
-                                </td>
-                            </tr>
+                    <tr>
+                        <td class="align-middle">@product.Name</td>
+                        <td class="align-middle">@product.Description</td>
+                        <td class="align-middle text-center" style="white-space: nowrap;">@product.Cost</td>
+                        <td class="align-middle text-center" style="white-space: nowrap;">@product.Quantity</td>
+                        <td class="align-middle">
+                            <img class="d-block img-fluid rounded" src="~/images/@product.Picture1" alt="" asp-append-version="true">
+                        </td>
+                        <td class="align-middle">
+                            <img class="d-block img-fluid rounded" src="~/images/@product.Picture2" alt="" asp-append-version="true">
+                        </td>
+                        <td class="align-middle">
+                            <img class="d-block img-fluid rounded" src="~/images/@product.Picture3" alt="" asp-append-version="true">
+                        </td>
+                        <td class="align-middle">
+                            <img class="d-block img-fluid rounded" src="~/images/@product.Picture4" alt="" asp-append-version="true">
+                        </td>
+                        <td class="align-middle text-center" style="white-space: nowrap;">@product.Category.Name</td>
+                        <td class="align-middle text-center" style="white-space: nowrap;">@product.Retailer.Name</td>
+                        <td class="align-middle text-center mt-2" style="display: flex; white-space: nowrap;">
+                            <a class="categoryButton mr-1 mt-2" id="detailCategory" asp-controller="Products" asp-action="Detail" asp-route-id="@product.Id"> <span> <i class="fas fa-info-circle"></i> </span> </a>
+                            <a class="categoryButton mr-1 mt-2" id="editCategory" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id"> <span> <i class="far fa-edit"></i> </span> </a>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("SuperAdmin"))
+                                {
+                            <a class="categoryButton mt-2" id="deleteCategory" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id"> <span> <i class="fas fa-trash-alt"></i> </span> </a>
+                                }
+                        </td>
+                    </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
-
+                </tbody>
+            </table>
+        </div>
         }
+
+        @*-------Add a product---------*@
+        <div class="container" style="margin-bottom:10px; margin-top:10px">
+            <div class="text-center">
+                <a class="btn btn-primary btn-xl text-uppercase" asp-controller="Products" asp-action="Add">Add a Deal</a>
+            </div>
+        </div>
 
         @if (Model.Count > 0) //If no deal or product is present
         {
             <!-- Retailer Locations-->
-            <div class="container pt-xl-5">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Product Map</h2>
-                    <h3 class="section-subheading text-muted mb-3">Find the locations of all deals below.</h3>
-                </div>
-                <div id="GoogleMaps" style="width:100%;height:400px;"></div>
+        <div class="container pt-xl-5">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Product Map</h2>
+                <h3 class="section-subheading text-muted mb-3">Find the locations of all deals below.</h3>
             </div>
+            <div id="GoogleMaps" style="width:100%;height:400px;"></div>
+        </div>
         }
 
     </section>

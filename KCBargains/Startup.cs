@@ -30,6 +30,8 @@ namespace KCBargains
             services.AddDbContext<BargainsDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("AzureDbConnection")));
 
+            /*            services.AddDbContext<BargainsDbContext>(options =>
+                           options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));*/
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {

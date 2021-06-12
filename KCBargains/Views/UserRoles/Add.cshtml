@@ -4,8 +4,12 @@
 <div class="container w-75 p-3">
     <section class="page-section" id="portfolio">
         <div class="container">
-            <h1>Role Manager</h1>
-            <form  asp-controller="UserRoles" asp-action="Add" method="post">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Role Manage - Admin View</h2>
+                <h3 class="section-subheading text-muted">Manage assigned roles here</h3>
+            </div> 
+            
+            <form asp-controller="UserRoles" asp-action="Add" method="post">
                 <div class="input-group">
                     <input name="roleName" class="form-control w-25">
                     <span class="input-group-btn">

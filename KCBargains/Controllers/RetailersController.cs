@@ -3,6 +3,7 @@ using KCBargains.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace KCBargains.Controllers
 
         public IActionResult Index()
         {
-            List<Retailer> retailers = context.Retailers.ToList();
+            List<Retailer> retailers = context.Retailers.Include(r => r.Products).ToList();
 
             return View(retailers);
         }

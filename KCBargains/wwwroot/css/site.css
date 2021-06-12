@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+﻿container @charset "UTF-8";
 /*!
 * Start Bootstrap - Agency v6.0.3 (https://startbootstrap.com/theme/agency)
 * Copyright 2013-2020 Start Bootstrap
@@ -11411,10 +11411,13 @@ img:hover {
     background: #d11a2a;
 }
 
-#editCategory span {
-    background: #138496;
+#editCategory span, .editCategory span {
+    background: #ffc107;
 }
 
+#detailCategory span {
+    background: #138496;
+}
 #addCategory span {
     background: #06A10B;
 }
@@ -11579,4 +11582,39 @@ img:hover {
 
 .table th, .table td {
     border-top: none;
+}
+
+
+/*Container for Login and Register Pages*/
+.myContainer {
+    width: 100%;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    padding-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .myContainer {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 768px) {
+     .myContainer {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 992px) {
+    .myContainer {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 1200px) {
+     .myContainer {
+        max-width: 400px;
+    }
 }

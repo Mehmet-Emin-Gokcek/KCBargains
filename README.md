@@ -12,7 +12,7 @@ An online platform that helps local brick and mortar stores advertise their deal
 - SendGrid email confirmation
 - Google API (Maps, Geolocation and Addresses)
 - Local and Social Media(Google and Facebook) Authentication
-- Autherization and Authentication
+- Autherization
 - Razor Views
 
 #### Languages:
